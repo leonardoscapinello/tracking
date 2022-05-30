@@ -1,0 +1,87 @@
+@font-face {
+    font-family: 'Proxima Nova';
+    src: url('static/fonts/proximanova/ProximaNova-Light.eot');
+    src: local('Proxima Nova Light'), local('ProximaNova-Light'),
+    url('static/fonts/proximanova/ProximaNova-Light.eot?#iefix') format('embedded-opentype'),
+    url('static/fonts/proximanova/ProximaNova-Light.woff2') format('woff2'),
+    url('static/fonts/proximanova/ProximaNova-Light.woff') format('woff'),
+    url('static/fonts/proximanova/ProximaNova-Light.ttf') format('truetype'),
+    url('static/fonts/proximanova/ProximaNova-Light.svg#ProximaNova-Light') format('svg');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+@font-face {
+    font-family: 'Proxima Nova';
+    src: url('static/fonts/proximanova/ProximaNova-Regular.eot');
+    src: local('Proxima Nova Regular'), local('ProximaNova-Regular'),
+        url('static/fonts/proximanova/ProximaNova-Regular.eot?#iefix') format('embedded-opentype'),
+        url('static/fonts/proximanova/ProximaNova-Regular.woff2') format('woff2'),
+        url('static/fonts/proximanova/ProximaNova-Regular.woff') format('woff'),
+        url('static/fonts/proximanova/ProximaNova-Regular.ttf') format('truetype'),
+        url('static/fonts/proximanova/ProximaNova-Regular.svg#ProximaNova-Regular') format('svg');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+@font-face {
+    font-family: 'Proxima Nova';
+    src: url('static/fonts/proximanova/ProximaNova-Semibold.eot');
+    src: url('static/fonts/proximanova/ProximaNova-Semibold.eot?#iefix') format('embedded-opentype'),
+    url('static/fonts/proximanova/ProximaNova-Semibold.woff2') format('woff2'),
+    url('static/fonts/proximanova/ProximaNova-Semibold.woff') format('woff'),
+    url('static/fonts/proximanova/ProximaNova-Semibold.ttf') format('truetype'),
+    url('static/fonts/proximanova/ProximaNova-Semibold.svg#ProximaNova-Semibold') format('svg');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+@font-face {
+    font-family: 'Proxima Nova';
+    src: url('static/fonts/proximanova/ProximaNova-Bold.eot');
+    src: local('Proxima Nova Bold'), local('ProximaNova-Bold'),
+    url('static/fonts/proximanova/ProximaNova-Bold.eot?#iefix') format('embedded-opentype'),
+    url('static/fonts/proximanova/ProximaNova-Bold.woff2') format('woff2'),
+    url('static/fonts/proximanova/ProximaNova-Bold.woff') format('woff'),
+    url('static/fonts/proximanova/ProximaNova-Bold.ttf') format('truetype'),
+    url('static/fonts/proximanova/ProximaNova-Bold.svg#ProximaNova-Bold') format('svg');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Proxima Nova';
+    src: url('static/fonts/proximanova/ProximaNova-Extrabld.eot');
+    src: local('Proxima Nova Extrabold'), local('ProximaNova-Extrabld'),
+        url('static/fonts/proximanova/ProximaNova-Extrabld.eot?#iefix') format('embedded-opentype'),
+        url('static/fonts/proximanova/ProximaNova-Extrabld.woff2') format('woff2'),
+        url('static/fonts/proximanova/ProximaNova-Extrabld.woff') format('woff'),
+        url('static/fonts/proximanova/ProximaNova-Extrabld.ttf') format('truetype'),
+        url('static/fonts/proximanova/ProximaNova-Extrabld.svg#ProximaNova-Extrabld') format('svg');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Proxima Nova';
+    src: url('static/fonts/proximanova/ProximaNova-Black.eot');
+    src: local('Proxima Nova Black'), local('ProximaNova-Black'),
+        url('static/fonts/proximanova/ProximaNova-Black.eot?#iefix') format('embedded-opentype'),
+        url('static/fonts/proximanova/ProximaNova-Black.woff2') format('woff2'),
+        url('static/fonts/proximanova/ProximaNova-Black.woff') format('woff'),
+        url('static/fonts/proximanova/ProximaNova-Black.ttf') format('truetype'),
+        url('static/fonts/proximanova/ProximaNova-Black.svg#ProximaNova-Black') format('svg');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+

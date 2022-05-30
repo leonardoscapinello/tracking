@@ -1,0 +1,52 @@
+{
+  "name": "escolaspace/memberarea",
+  "description": "SpacePlay Application",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Leonardo Scapinello",
+      "email": "leonardo@novaexperiencia.com",
+      "homepage": "https://www.novaexperiencia.com",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "email": "tecnologia@novaexperiencia.com"
+  },
+  "require": {
+    "php": "^7.3|^8.0",
+    "leafo/lessphp": "0.4.0",
+    "vlucas/phpdotenv": "^5.2",
+    "ext-pdo": "*",
+    "ext-gd": "*",
+    "enshrined/svg-sanitize": "^0.13.3",
+    "ext-openssl": "*",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-fileinfo": "*",
+    "ext-mbstring": "*",
+    "spatie/image-optimizer": "^1.2",
+    "ps/image-optimizer": "^2.0",
+    "ext-iconv": "*",
+    "neitanod/forceutf8": "~2.0",
+    "rosell-dk/webp-convert": "^2.3",
+    "ext-dom": "*",
+    "html2text/html2text": "^4.3",
+    "respect/validation": "^2.2",
+    "php-curl-class/php-curl-class": "^9.1",
+    "guzzlehttp/guzzle": "^7.3",
+    "smarty/smarty": "^4.0",
+    "lasserafn/php-initial-avatar-generator": "^4.2",
+    "codex-team/editor.js": "dev-master",
+    "google/apiclient": "^2.0"
+  },
+  "config": {
+    "vendor-dir": "app/vendor/",
+    "platform-check": false
+  },
+  "autoload": {
+    "psr-4": {
+      "Leafo\\Lessphp\\": "app/vendor/"
+    }
+  }
+}

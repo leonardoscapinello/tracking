@@ -1,0 +1,6 @@
+.idea
+.env
+.env.example
+notification.html
+composer.lock
+composer.json.backup
