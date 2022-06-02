@@ -7,13 +7,13 @@ RewriteRule ^download$      ./download.php [L,NC,QSA]
 RewriteRule ^profile/drawn/([0-9]+)x([0-9]+)/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)/([0-9]+)/([0-9]+)/([a-zA-Z0-9_-]+)$   ./public/profile/generate.php?width=$1&height=$2&background=$3&color=$4&quality=$5&length=$6&format=$7 [L,NC,QSA]
 
 
-RewriteRule ^login$                                 ./index.php?category_slug=authenticate&route_slug=login [L,NC,QSA]
-RewriteRule ^register$                              ./index.php?category_slug=authenticate&route_slug=register [L,NC,QSA]
-RewriteRule ^feed$                                  ./index.php?category_slug=classroom&route_slug=classroom&classroom_category=feed&classroom_slug=index [L,NC,QSA]
-RewriteRule ^read/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)/([0-9]+)-([a-zA-Z0-9_-]+)$                       ./index.php?category_slug=classroom&route_slug=read&id=$3 [L,NC,QSA] #administrative tools of classrooms
-RewriteRule ^classroom/post/edit/([a-zA-Z0-9_-]+)$                       ./index.php?category_slug=posts&route_slug=edit-post&id=$1 [L,NC,QSA] #administrative tools of classrooms
-RewriteRule ^classroom/([a-zA-Z0-9_-]+)/([0-9]+)$                       ./index.php?category_slug=classroom&route_slug=$1&id=$2 [L,NC,QSA] #administrative tools of classrooms
-RewriteRule ^classroom/([a-zA-Z0-9_-]+)$                                ./index.php?category_slug=classroom&route_slug=$1 [L,NC,QSA] #administrative tools of classrooms
+RewriteRule ^login$                                 ./index.php?module_category=authenticate&module_slug=login [L,NC,QSA]
+RewriteRule ^register$                              ./index.php?module_category=authenticate&module_slug=register [L,NC,QSA]
+
+#dashboard home
+RewriteRule ^d/home$                              ./index.php?module_category=dashboard&module_slug=select-domain [L,NC,QSA]
+
+
 RewriteRule ^api/v1/([a-zA-Z0-9_-]+)/([0-9]+)$                  ./routes/api/v1/index.php?route=$1&file=show&id=$2 [L,NC,QSA]
 RewriteRule ^api/v1/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)$          ./routes/api/v1/index.php?route=$1&file=$2 [L,NC,QSA]
 RewriteRule ^api/v1/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)$          ./routes/api/v1/index.php?route=$1&file=$2&id=$3 [L,NC,QSA]
@@ -21,7 +21,10 @@ RewriteRule ^uploads/(.*)$          ./public/uploads/$1 [L,NC,QSA]
 
 
 
-RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)$     ./index.php?category_slug=classroom&route_slug=classroom&classroom_category=$1&classroom_slug=$2 [L,NC,QSA]
-RewriteRule ^([a-zA-Z0-9_-]+)$                      ./index.php?category_slug=classroom&route_slug=classroom&classroom_category=$1&classroom_slug=index  [L,NC,QSA]
+RewriteRule ^d/([\w.-])/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)/([0-9_-]+)$       ./index.php?domain=$1&module_category=$2&module_slug=$3&id=$4 [L,NC,QSA]
+RewriteRule ^d/([\w.-])/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)$                  ./index.php?domain=$1&module_category=$2&module_slug=$3 [L,NC,QSA]
+RewriteRule ^d/([\w.-])/([a-zA-Z0-9_-]+)$                                   ./index.php?domain=$1&module_category=$2  [L,NC,QSA]
+RewriteRule ^d/([\w.-])$                                                    ./index.php?module_category=$1  [L,NC,QSA]
+RewriteRule ^d(.*)$                                                         ./index.php  [L,NC,QSA]
 
 

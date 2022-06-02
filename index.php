@@ -1,17 +1,22 @@
 <?php
 require_once("app/setup/loaders.php");
 
-if (!$routes->getIsPublic()) {
-    require_once("app/setup/session.validator.php");
+
+if ($modules->isModulesExists()) {
+    if ($modules->isPrivate()) {
+        require_once("app/setup/session.validator.php");
+    }
+} else {
+    echo $modules->getCategorySlug();
+    //require_once("app/setup/session.validator.php");
 }
 
-if (!not_empty(get_request("classroom_category")) && !not_empty(get_request("classroom_slug")) && !not_empty(get_request("route_slug"))) {
-    $url->application("classroom")->page("feed")->add(["hgl" => "pt-BR"])->redirect();
+if (!not_empty(get_request("module_category")) && !not_empty(get_request("module_slug")) && !not_empty(get_request("domain"))) {
+    $url->application("dashboard")->page("home")->add(["hgl" => "pt-BR","f" => "domain"])->redirect();
     die;
 }
 
 
-$posts = new Posts();
 ob_start("sanitize_output");
 ?>
 <html lang="pt-br">
@@ -28,6 +33,7 @@ ob_start("sanitize_output");
         "container.css",
         "noty.css",
         "stylesheet.css",
+        "tables.css",
     ])->replace("static/fonts/", $env->get("APP_URL") . "/static/fonts/")->minify()->output("stylesheet.min.css")->embed();
     ?>
     <?php if (!true) { ?>
@@ -57,7 +63,6 @@ ob_start("sanitize_output");
             }
         </style>
     <?php } ?>
-    <script src="https://cdn.gravitec.net/storage/850d87b17d2e74f3c89d06b841a9dc54/client.js" async></script>
     <script type="text/javascript">
         let config = {
             api: {
@@ -71,9 +76,9 @@ ob_start("sanitize_output");
 
     ?>
 </head>
-<body class="<?= $routes->getCategorySlug() ?> light">
+<body class="light">
 
-<?php if ($routes->getIsClassroom()) { ?>
+<?php if ($modules->isDashboard()) { ?>
     <div class="wrapper">
         <header>
             <div class="header">
@@ -82,12 +87,7 @@ ob_start("sanitize_output");
                         <div class="col-xl-2 col-lg-3 col-sm-6 main-center-flex">
                             <div class="main-branding">
                                 <div class="branding">
-                                    <?= $static->img("escolaspace-dark.png")->ratio(32)->save()->classList("object-dark")->html() ?>
-                                    <?= $static->img("escolaspace-light.png")->ratio(32)->save()->classList("object-light")->html() ?>
-                                </div>
-                                <div class="discover">
-                                    <?= translate("Discover") ?>
-                                    <sup><?= translate("Beta") ?></sup>
+                                    <?= $static->img("trackwithjames.svg")->html() ?>
                                 </div>
                             </div>
                         </div>
@@ -109,9 +109,6 @@ ob_start("sanitize_output");
                             <div class="profile-widgets">
                                 <div class="actions">
                                     <ul>
-                                        <?php if ($classroom->getIsWritable()) { ?>
-                                            <li><a href="#"><i class="fal fa-plus-square"></i></a></li>
-                                        <?php } ?>
                                         <li><a href="#"><i class="fal fa-bell"></i></a></li>
                                         <li><a href="#"><i class="fal fa-cog"></i></a></li>
                                     </ul>
@@ -132,23 +129,23 @@ ob_start("sanitize_output");
 
                 <div class="container">
                     <div class="row">
-                        <div class="col-xl-3 col-lg-3 col-sm-12">
-                            <div class="sidebar-sticky">
-                                <?= $classroom->navigation() ?>
-                            </div>
-                        </div>
-                        <div class="col-xl-6 col-lg-6 col-sm-12">
 
+
+                        <?php if (!$modules->isFullWidth()) { ?>
+                            <div class="col-xl-3 col-lg-3 col-sm-12">
+                                <div class="sidebar-sticky">
+                                    <?= $modules->navigation() ?>
+                                </div>
+                            </div>
+                        <?php } ?>
+
+                        <div class="<?= ($modules->isFullWidth() ? "col-xl-12 col-lg-12 col-sm-12" : "col-xl-9 col-lg-9 col-sm-12") ?>">
 
                             <?php
-                            $route_file = $routes->get();
+                            $route_file = $modules->get();
                             if (not_empty($route_file)) require $route_file;
                             else  echo "Page not found";
-
                             ?>
-
-                        </div>
-                        <div class="col-xl-3 col-lg-3 col-sm-12">
 
                         </div>
                     </div>
@@ -159,42 +156,9 @@ ob_start("sanitize_output");
 
     </div>
 
-
-    <script type="text/javascript">
-        if (document.getElementById("editor") !== undefined) {
-            let post = new Post();
-            const editor = new EditorJS({
-                holder: "editor",
-                autofocus: true,
-
-                tools: {
-                    image: {
-                        class: ImageTool,
-                        config: {
-                            endpoints: {
-                                byFile: config.api.url + '/images/upload',
-                            },
-                            additionalRequestData: {
-                                id: "<?=$url->getId()?>"
-                            },
-                            buttonContent: `<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M3.15 13.628A7.749 7.749 0 0 0 10 17.75a7.74 7.74 0 0 0 6.305-3.242l-2.387-2.127-2.765 2.244-4.389-4.496-3.614 3.5zm-.787-2.303l4.446-4.371 4.52 4.63 2.534-2.057 3.533 2.797c.23-.734.354-1.514.354-2.324a7.75 7.75 0 1 0-15.387 1.325zM10 20C4.477 20 0 15.523 0 10S4.477 0 10 0s10 4.477 10 10-4.477 10-10 10z"></path></svg><?=translate("Select an Image")?>`
-                        }
-                    }
-                },
-            });
-            document.getElementById("save-button").onclick = function () {
-                editor.save().then((outputData) => {
-                    post.save('<?=$url->getId()?>', outputData);
-                }).catch((error) => {
-                    console.log('Saving failed: ', error)
-                });
-            }
-        }
-    </script>
 <?php } else {
 
-
-    $route_file = $routes->get();
+    $route_file = $modules->get();
     if (not_empty($route_file)) require $route_file;
     else  echo "Page not found";
 

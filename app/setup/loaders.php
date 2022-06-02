@@ -17,8 +17,7 @@ $fields = new Fields();
 $alerts = new Alerts();
 $url = new URL();
 $session = new AccountsSession();
-$routes = new Routes();
-$classroom = new ClassRooms();
+$modules = new Modules();
 $account = new Accounts();
 
 define("API_URL", $env->get("API_URL"));

@@ -104,7 +104,7 @@ class StaticFilesCSS
             $filename = str_replace(".css", ".min.css", $filename);
         }
 
-        $path = $env->get("APP_STATIC") . "/stylesheet/" . $filename;
+        $path = $env->get("APP_STATIC") . "/stylesheet/" . $filename . "?v=" . date("YmdHis");
 
 
         $id = "";

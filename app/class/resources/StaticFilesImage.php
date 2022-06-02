@@ -168,11 +168,11 @@ class StaticFilesImage
         return $this;
     }
 
-    public function inline()
+    public function inline(): string
     {
         $env = new Env();
-        if (!$this->_is_svg) return $src = $env->get("APP_URL") . "/images/" . $this->filename();
-        return $this->_svg_content;
+        if (!$this->_is_svg) return $env->get("APP_URL") . "/images/" . $this->filename();
+        return $env->get("APP_URL") . "/images/" . $this->filename();
     }
 
     public function save(): StaticFilesImage
@@ -209,6 +209,8 @@ class StaticFilesImage
         $alt = not_empty($this->_description) ? "alt=\"" . $this->_description . "\"" : "";
         $class = not_empty($this->_class) ? "class=\"" . $this->_class . "\"" : "";
         $shadow_class = ($this->_shadow) ? "class=\"shadow-effect\"" : "";
+
+        if ($this->_is_svg) return $this->_svg_content;
 
         if ($this->_shadow) return sprintf("<figure %s><img src=\"%s\" %s %s><img src=\"%s\"></figure>", $shadow_class, $src, $alt, $class, $src);
         return sprintf("<figure><img src=\"%s\" %s %s></figure>", $src, $alt, $class);

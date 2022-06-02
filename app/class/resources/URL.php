@@ -78,20 +78,8 @@ class URL
             case "uploads":
                 $this->_application_url = "uploads/";
                 break;
-            case "post-share":
-                $this->_application_url = "r/";
-                break;
-            case "edit-post":
-                $this->_application_url = "classroom/post/edit/";
-                break;
-            case "classroom-tools":
-                $this->_application_url = "classroom/";
-                break;
-            case "meeting":
-                $this->_application_url = "meeting/";
-                break;
-            case "read":
-                $this->_application_url = "read/";
+            case "dashboard":
+                $this->_application_url = "d/";
                 break;
             default:
                 $this->_application_url = "";

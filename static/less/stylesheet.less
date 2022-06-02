@@ -1,5 +1,5 @@
 :root {
-  --header-background: #FFFFFF;
+  --header-background: #181E38;
   --header-color: #1B1D1F;
   --header-icon-color: #A1A1A1;
   --header-search-backgroud: #F7F8F9;
@@ -22,8 +22,8 @@
   --object-light: none;
 
   --content-wrapper-background: #FFFFFF;
-  --content-wrapper-border: 1px #F0F0F0 solid;
-  --content-border-color: #F0F0F0;
+  --content-wrapper-border: 1px #FAFBFF solid;
+  --content-border-color: #FAFBFF;
 
   --button-background: #007FB2;
   --button-color: #FFFFFF;
@@ -56,11 +56,22 @@ html, body {
   height: 100%;
 
   &:not(.authenticate) {
-    background: #F7F8F9;
+    background: #FBFAFF;
   }
 }
 
 body {
+}
+
+
+.header {
+  & svg{
+    fill: #FBFAFF;
+    width: 170px;
+  }
+  & path {
+    fill: #FBFAFF;
+  }
 }
 
 .object-dark {
