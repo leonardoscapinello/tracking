@@ -38,7 +38,9 @@
     "smarty/smarty": "^4.0",
     "lasserafn/php-initial-avatar-generator": "^4.2",
     "codex-team/editor.js": "dev-master",
-    "google/apiclient": "^2.0"
+    "google/apiclient": "^2.0",
+    "scssphp/scssphp": "^1.10.3",
+    "panique/php-sass": "1.0"
   },
   "config": {
     "vendor-dir": "app/vendor/",

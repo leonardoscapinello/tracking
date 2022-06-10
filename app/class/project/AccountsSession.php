@@ -56,6 +56,11 @@ class AccountsSession
         return 0;
     }
 
+    public function getAccountId(): int
+    {
+        return $this->isLogged();
+    }
+
     public function authenticate(): bool
     {
         try {

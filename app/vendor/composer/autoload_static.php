@@ -21,6 +21,7 @@ class ComposerStaticInit753f25465862702dd77f35e3af847ca9
         '2df68f9e79c919e2d88506611769ed2e' => __DIR__ . '/..' . '/respect/stringifier/src/stringify.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         'a8d3953fd9959404dd22d3dfcd0a79f0' => __DIR__ . '/..' . '/google/apiclient/src/aliases.php',
+        '713b52c45daebafcea655af0c213c935' => __DIR__ . '/..' . '/panique/php-sass/sass-compiler.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -45,6 +46,7 @@ class ComposerStaticInit753f25465862702dd77f35e3af847ca9
             'Symfony\\Component\\Process\\' => 26,
             'Symfony\\Component\\OptionsResolver\\' => 34,
             'Spatie\\ImageOptimizer\\' => 22,
+            'ScssPhp\\ScssPhp\\' => 16,
             'SVG\\' => 4,
         ),
         'R' => 
@@ -71,6 +73,8 @@ class ComposerStaticInit753f25465862702dd77f35e3af847ca9
         ),
         'L' => 
         array (
+            'LocateBinaries\\' => 15,
+            'Leafo\\ScssPhp\\' => 14,
             'Leafo\\Lessphp\\' => 14,
             'LasseRafn\\Initials\\' => 19,
             'LasseRafn\\InitialAvatarGenerator\\' => 33,
@@ -79,6 +83,7 @@ class ComposerStaticInit753f25465862702dd77f35e3af847ca9
         'I' => 
         array (
             'Intervention\\Image\\' => 19,
+            'ImageMimeTypeSniffer\\' => 21,
             'ImageMimeTypeGuesser\\' => 21,
         ),
         'H' => 
@@ -98,6 +103,7 @@ class ComposerStaticInit753f25465862702dd77f35e3af847ca9
         'F' => 
         array (
             'Firebase\\JWT\\' => 13,
+            'FileUtil\\' => 9,
         ),
         'E' => 
         array (
@@ -155,6 +161,10 @@ class ComposerStaticInit753f25465862702dd77f35e3af847ca9
         array (
             0 => __DIR__ . '/..' . '/spatie/image-optimizer/src',
         ),
+        'ScssPhp\\ScssPhp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/scssphp/scssphp/src',
+        ),
         'SVG\\' => 
         array (
             0 => __DIR__ . '/..' . '/meyfa/php-svg/src',
@@ -200,9 +210,17 @@ class ComposerStaticInit753f25465862702dd77f35e3af847ca9
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
+        'LocateBinaries\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/rosell-dk/locate-binaries/src',
+        ),
+        'Leafo\\ScssPhp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/leafo/scssphp/src',
+        ),
         'Leafo\\Lessphp\\' => 
         array (
-            0 => 'C:\\wamp64\\www\\memberarea\\app\\vendor',
+            0 => 'C:\\wamp64\\www\\tracking\\app\\vendor',
         ),
         'LasseRafn\\Initials\\' => 
         array (
@@ -219,6 +237,10 @@ class ComposerStaticInit753f25465862702dd77f35e3af847ca9
         'Intervention\\Image\\' => 
         array (
             0 => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image',
+        ),
+        'ImageMimeTypeSniffer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/rosell-dk/image-mime-type-sniffer/src',
         ),
         'ImageMimeTypeGuesser\\' => 
         array (
@@ -260,6 +282,10 @@ class ComposerStaticInit753f25465862702dd77f35e3af847ca9
         'Firebase\\JWT\\' => 
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
+        'FileUtil\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/rosell-dk/file-util/src',
         ),
         'ExecWithFallback\\' => 
         array (
@@ -506,6 +532,13 @@ class ComposerStaticInit753f25465862702dd77f35e3af847ca9
         'lessc_formatter_compressed' => __DIR__ . '/..' . '/leafo/lessphp/lessc.inc.php',
         'lessc_formatter_lessjs' => __DIR__ . '/..' . '/leafo/lessphp/lessc.inc.php',
         'lessc_parser' => __DIR__ . '/..' . '/leafo/lessphp/lessc.inc.php',
+        'scss_formatter' => __DIR__ . '/..' . '/leafo/scssphp/classmap.php',
+        'scss_formatter_compressed' => __DIR__ . '/..' . '/leafo/scssphp/classmap.php',
+        'scss_formatter_crunched' => __DIR__ . '/..' . '/leafo/scssphp/classmap.php',
+        'scss_formatter_nested' => __DIR__ . '/..' . '/leafo/scssphp/classmap.php',
+        'scss_parser' => __DIR__ . '/..' . '/leafo/scssphp/classmap.php',
+        'scss_server' => __DIR__ . '/..' . '/leafo/scssphp/classmap.php',
+        'scssc' => __DIR__ . '/..' . '/leafo/scssphp/classmap.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

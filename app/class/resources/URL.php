@@ -78,9 +78,6 @@ class URL
             case "uploads":
                 $this->_application_url = "uploads/";
                 break;
-            case "dashboard":
-                $this->_application_url = "d/";
-                break;
             default:
                 $this->_application_url = "";
                 break;
@@ -106,10 +103,27 @@ class URL
         }
     }
 
+    public function goToNext()
+    {
+        try {
+            if (not_empty_bool(get_request("next"))) {
+                $this->set(get_request("next", true, true))->redirect();
+            }
+        } catch (Exception $exception) {
+            logger($exception);
+        }
+    }
+
     public function page($page): URL
     {
         $env = new Env();
         $this->_url = $env->get("APP_URL") . "/" . trim($this->_application_url) . trim($page);
+        return $this;
+    }
+
+    public function setId($id): URL
+    {
+        $this->_url = $this->_url . "/" . $id;
         return $this;
     }
 

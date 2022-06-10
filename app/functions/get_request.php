@@ -1,7 +1,7 @@
 <?php
 
 
-function get_request($index, $ignore_cookie = false, $decode = true, $hash_index = false)
+function get_request($index, $ignore_cookie = false, $decode = false, $hash_index = false)
 {
     $fields = new Fields();
     $tx = new Text();

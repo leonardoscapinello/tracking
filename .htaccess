@@ -20,11 +20,7 @@ RewriteRule ^api/v1/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)$         
 RewriteRule ^uploads/(.*)$          ./public/uploads/$1 [L,NC,QSA]
 
 
-
-RewriteRule ^d/([\w.-])/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)/([0-9_-]+)$       ./index.php?domain=$1&module_category=$2&module_slug=$3&id=$4 [L,NC,QSA]
-RewriteRule ^d/([\w.-])/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)$                  ./index.php?domain=$1&module_category=$2&module_slug=$3 [L,NC,QSA]
-RewriteRule ^d/([\w.-])/([a-zA-Z0-9_-]+)$                                   ./index.php?domain=$1&module_category=$2  [L,NC,QSA]
-RewriteRule ^d/([\w.-])$                                                    ./index.php?module_category=$1  [L,NC,QSA]
-RewriteRule ^d(.*)$                                                         ./index.php  [L,NC,QSA]
+RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)/?$     ./index.php?module_slug=$1&id=$2  [L,NC,QSA]
+RewriteRule ^([a-zA-Z0-9_-]+)/?$                ./index.php?module_slug=$1  [L,NC,QSA]
 
 

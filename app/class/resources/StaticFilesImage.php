@@ -16,8 +16,8 @@ class StaticFilesImage
     private $_new_image;
     private $_new_image_type;
     private $_compression = 75;
-    private $_path = DIRNAME . "../../static/images/";
-    private $_render_path = DIRNAME . "../../public/images/";
+    private $_path = DIRNAME . "../../static/img/";
+    private $_render_path = DIRNAME . "../../public/img/";
     private $_description;
     private $_is_svg;
     private $_svg_content;
@@ -171,8 +171,8 @@ class StaticFilesImage
     public function inline(): string
     {
         $env = new Env();
-        if (!$this->_is_svg) return $env->get("APP_URL") . "/images/" . $this->filename();
-        return $env->get("APP_URL") . "/images/" . $this->filename();
+        if (!$this->_is_svg) return $env->get("APP_URL") . "/img/" . $this->filename();
+        return $env->get("APP_URL") . "/img/" . $this->filename();
     }
 
     public function save(): StaticFilesImage
@@ -205,7 +205,7 @@ class StaticFilesImage
     {
         $env = new Env();
         $filename = $this->filename();
-        $src = $env->get("APP_URL") . "/images/" . $filename;
+        $src = $env->get("APP_URL") . "/img/" . $filename;
         $alt = not_empty($this->_description) ? "alt=\"" . $this->_description . "\"" : "";
         $class = not_empty($this->_class) ? "class=\"" . $this->_class . "\"" : "";
         $shadow_class = ($this->_shadow) ? "class=\"shadow-effect\"" : "";

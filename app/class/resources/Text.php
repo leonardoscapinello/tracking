@@ -8,49 +8,49 @@ class Text
 
     private $_text;
 
-    public function set($text)
+    public function set($text): Text
     {
         $this->_text = $text;
         return $this;
     }
 
-    public function utf8()
+    public function utf8(): Text
     {
         $this->_text = Encoding::fixUTF8($this->_text);
         return $this;
     }
 
-    public function utf8mb4()
+    public function utf8mb4(): Text
     {
         return $this;
     }
 
-    public function bin2hex()
+    public function bin2hex(): Text
     {
         $this->_text = mb_convert_encoding($this->_text, 'UTF-32', 'UTF-8');
         $this->_text = strtoupper(preg_replace("/^[0]+/", "U+", bin2hex($this->_text)));
         return $this;
     }
 
-    public function hex2str()
+    public function hex2str(): Text
     {
         $this->_text = mb_convert_encoding($this->_text, 'UTF-8', 'UTF-16BE');
         return $this;
     }
 
-    public function ut8decode()
+    public function ut8decode(): Text
     {
         $this->_text = utf8_decode($this->_text);
         return $this;
     }
 
-    public function length(int $length = 200)
+    public function length(int $length = 200): Text
     {
         $this->_text = substr($this->_text, 0, (strlen($this->_text) >= $length ? $length : strlen($this->_text)));
         return $this;
     }
 
-    public function random($length = 8)
+    public function random($length = 8): Text
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
@@ -61,25 +61,35 @@ class Text
         return $this;
     }
 
-    public function lowercase()
+    public function lowercase(): Text
     {
         $this->_text = mb_convert_case($this->_text, MB_CASE_LOWER, "UTF-8");
         return $this;
     }
 
-    public function uppercase()
+    public function uppercase(): Text
     {
         $this->_text = mb_convert_case($this->_text, MB_CASE_UPPER, "UTF-8");
         return $this;
     }
 
-    public function capitalize()
+    public function capitalize(): Text
     {
         $this->_text = ucwords($this->_text);
         return $this;
     }
 
-    public function replaceSpecialCharacters()
+    public function short($chars_limit = 12): Text
+    {
+        if (strlen($this->_text) > $chars_limit) {
+            $new_text = substr($this->_text, 0, $chars_limit);
+            $new_text = trim($new_text);
+            $this->_text = $new_text . "...";
+        }
+        return $this;
+    }
+
+    public function replaceSpecialCharacters(): Text
     {
         $replace = [
             '&lt;' => '', '&gt;' => '', '&#039;' => '', '&amp;' => '',
@@ -133,7 +143,7 @@ class Text
         return $this;
     }
 
-    public function mask($mask)
+    public function mask($mask): Text
     {
         $resultMask = '';
         $k = 0;
@@ -152,7 +162,7 @@ class Text
     }
 
 
-    public function obfuscate($symbol = "@")
+    public function obfuscate($symbol = "@"): Text
     {
         $em = explode($symbol, $this->_text);
         $name = implode($symbol, array_slice($em, 0, count($em) - 1));
@@ -162,14 +172,14 @@ class Text
     }
 
 
-    public function empty($replace_with = " - ")
+    public function empty($replace_with = " - "): Text
     {
         if (!not_empty($this->_text)) $this->_text = $replace_with;
         return $this;
     }
 
 
-    public function encode()
+    public function encode(): Text
     {
         if (not_empty($this->_text) && !$this->is_base64_encoded($this->_text)) {
             $this->_text = base64_encode($this->_text);
@@ -177,7 +187,7 @@ class Text
         return $this;
     }
 
-    public function decode()
+    public function decode(): Text
     {
         if ($this->is_base64_encoded($this->_text)) {
             $this->_text = base64_decode($this->_text);
@@ -197,7 +207,7 @@ class Text
         return false;
     }
 
-    public function outputHTML(string $html_tag, ...$attributes)
+    public function outputHTML(string $html_tag, ...$attributes): string
     {
         if (not_empty($html_tag)) return " < $html_tag $attributes > $this->_text</$html_tag > ";
         return $this->_text;
@@ -208,7 +218,7 @@ class Text
         return $this->_text;
     }
 
-    public function equalsIgnoreCase($value, $compare)
+    public function equalsIgnoreCase($value, $compare): bool
     {
 
         if (!not_empty($value) || !not_empty($compare)) return false;
@@ -223,7 +233,7 @@ class Text
         return $this->_text;
     }
 
-    private function format($str)
+    private function format($str): string
     {
         $copy = false;
         $len = strlen($str);
@@ -242,6 +252,29 @@ class Text
             }
         }
         return 'U+' . strtoupper($res);
+    }
+
+    public function uuid(): string
+    {
+        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            // 32 bits for "time_low"
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+
+            // 16 bits for "time_mid"
+            mt_rand(0, 0xffff),
+
+            // 16 bits for "time_hi_and_version",
+            // four most significant bits holds version number 4
+            mt_rand(0, 0x0fff) | 0x4000,
+
+            // 16 bits, 8 bits for "clk_seq_hi_res",
+            // 8 bits for "clk_seq_low",
+            // two most significant bits holds zero and one for variant DCE1.1
+            mt_rand(0, 0x3fff) | 0x8000,
+
+            // 48 bits for "node"
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+        );
     }
 
 }

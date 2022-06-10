@@ -3,7 +3,7 @@
 class StaticFilesCSS
 {
 
-    private $_path = DIRNAME . "../../static/stylesheet/";
+    private $_path = DIRNAME . "../../static/css/";
     private $_filename = null;
     private $_css = null;
     private $_id;
@@ -104,7 +104,7 @@ class StaticFilesCSS
             $filename = str_replace(".css", ".min.css", $filename);
         }
 
-        $path = $env->get("APP_STATIC") . "/stylesheet/" . $filename . "?v=" . date("YmdHis");
+        $path = $env->get("APP_STATIC") . "/css/" . $filename . "?v=" . date("YmdHis");
 
 
         $id = "";
@@ -112,6 +112,7 @@ class StaticFilesCSS
             $id = "id=\"$this->_id\"";
         }
 
+        $this->clean();
         return "<link href=\"$path\" type=\"text/css\" rel=\"stylesheet\" $id>" . PHP_EOL;
     }
 
@@ -119,6 +120,17 @@ class StaticFilesCSS
     {
         echo $error;
         return $this;
+    }
+
+    private function clean()
+    {
+        $this->_path = DIRNAME . "../../static/css/";
+        $this->_filename = null;
+        $this->_css = null;
+        $this->_id = null;
+        $this->is_minified = false;
+        $this->_search = null;;
+        $this->_replace = null;;
     }
 
 }

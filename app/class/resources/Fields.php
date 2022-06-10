@@ -15,7 +15,7 @@ class Fields
     private $_readonly = false;
     private $_label;
     private $_class = "spc-input form-control";
-    private $_labelclass = "form-group";
+    private $_labelclass = "";
     private $_style;
     private $_blur;
     private $_icon;
@@ -29,6 +29,7 @@ class Fields
     private $_selected;
     private $_field_type = "text";
     private $_custom_type = "text";
+    private $_custom_script = "";
     private $_maxlength;
     private $_min;
     private $_max;
@@ -42,7 +43,7 @@ class Fields
     public function text(string $custom_type = "text"): Fields
     {
         $this->_custom_type = $custom_type;
-        $this->_template = '<div class="form-group"><div class="form-meta"><label for="%for" class="%labelclass">%label</label></div><div class="form-input"><input type="' . $custom_type . '" class="%class" name="%name" %id placeholder="%placeholder" value="%value" %min %max %maxlength %blur %style %required %disabled %readonly/></div></div>';
+        $this->_template = '<div class="form-group"><div class="form-meta"><label for="%for" class="%labelclass">%label</label></div><div class="form-input"><input type="' . $custom_type . '" class="%class" name="%name" %id placeholder="%placeholder" value="%value" %min %max %maxlength %blur %style %required %disabled %readonly %customScript/></div></div>';
         return $this;
     }
 
@@ -57,7 +58,7 @@ class Fields
     public function textarea(): Fields
     {
         $this->_field_type = "textarea";
-        $this->_template = '<div class="form-group"><div class="form-meta"><label for="%for" class="%labelclass"><span class="spc-label-text">%label</span>%markdown</div><div class="form-input"><textarea class="%class" name="%name" %id placeholder="%placeholder" %maxlength %blur %style %required %disabled %readonly>%value</textarea></label></div></div>';
+        $this->_template = '<div class="form-group"><label for="%for" class="%labelclass"><span class="spc-label-text">%label</span>%markdown</div><div class="form-input"><textarea class="%class" name="%name" %id placeholder="%placeholder" %maxlength %blur %style %required %disabled %readonly>%value</textarea></label></div></div>';
         return $this;
     }
 
@@ -65,7 +66,7 @@ class Fields
     {
         $this->_field_type = "button";
         $this->_class = str_replace("spc-input", "menu button primary-small", $this->_class);
-        $this->_template = '<div class="%labelclass"><button class="btn %class" %style value="%value">%icon %value</button></div>';
+        $this->_template = '<div class="%labelclass"><button class="btn %class" %style value="%value" %customScript>%icon %value</button></div>';
         return $this;
     }
 
@@ -73,7 +74,7 @@ class Fields
     {
         $this->_field_type = "select";
         $this->_class = str_replace("spc-input", "spc-select", $this->_class);
-        $this->_template = '<div class="form-group"><div class="form-meta"><label for="%id" class="%labelclass"><span class="spc-label-text">%label</span>%markdown</div><div class="form-input"><select class="%class" name="%name" %id  %style %required %disabled>%options</select></label></div></div>';
+        $this->_template = '<div class="form-group"><div class="form-meta"><label for="%id" class="%labelclass"><span class="spc-label-text">%label</span>%markdown</div><div class="form-input"><select class="%class" name="%name" %id  %style %required %disabled %customScript>%options</select></label></div></div>';
         return $this;
     }
 
@@ -151,6 +152,7 @@ class Fields
     public function options(array $options): Fields
     {
         $this->_options = $options;
+        $this->optionsHTML();
         return $this;
     }
 
@@ -208,6 +210,13 @@ class Fields
     }
 
 
+    public function customScript($customScript): Fields
+    {
+        $this->_custom_script = $customScript;
+        return $this;
+    }
+
+
     public function blur($blur): Fields
     {
         $this->_blur = $blur;
@@ -236,6 +245,7 @@ class Fields
         $output = str_replace("%maxlength", (not_empty_bool($this->_maxlength) ? "maxlength=\"" . $this->_maxlength . "\"" : ""), $output);
         $output = str_replace("%min", (not_empty_bool($this->_min) ? "min=\"" . $this->_min . "\"" : ""), $output);
         $output = str_replace("%max", (not_empty_bool($this->_max) ? "max=\"" . $this->_max . "\"" : ""), $output);
+        $output = str_replace("%customScript", (not_empty_bool($this->_custom_script) ? $this->_custom_script : ""), $output);
         $output = str_replace("%style", (not_empty_bool($this->_max) ? "style=\"" . $this->_style . "\"" : ""), $output);
         $output = str_replace("%options", not_empty_bool($this->_options_html) ? $this->_options_html : "", $output);
         $output = str_replace("%selected", (not_empty_bool($this->_selected) ? $this->_selected : ""), $output);
@@ -256,7 +266,7 @@ class Fields
 
     public function optionsHTML($html = null, $set_custom = false): Fields
     {
-        if (!not_empty($html) && $set_custom !== true) {
+        if (!not_empty($html) && $set_custom === false) {
             $text = new Text();
             $options_html = "";
             foreach ($this->_options as $key => $value) {
@@ -292,7 +302,7 @@ class Fields
         $this->_readonly = false;
         $this->_label = "";
         $this->_class = "spc-input form-control";
-        $this->_labelclass = "form-group";
+        $this->_labelclass = "";
         $this->_style = "";
         $this->_markdown = "";
         $this->_template = "";
@@ -307,6 +317,7 @@ class Fields
         $this->_maxlength = "";
         $this->_min = "";
         $this->_max = "";
+        $this->_custom_script = "";
         $this->_options_html = "";
 
     }

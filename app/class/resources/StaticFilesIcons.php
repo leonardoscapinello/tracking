@@ -3,7 +3,7 @@
 class StaticFilesIcons
 {
     private $_technology_name = "NEX-AUTOLOAD-ICONS";
-    private $_path = DIRNAME . "../../dashboard/stylesheet/";
+    private $_path = DIRNAME . "../../dashboard/css/";
     private $_filename = "icons.min.css";
     private $_fonts_files = "fonts.css";
     private $_styles = array(
@@ -1073,7 +1073,7 @@ class StaticFilesIcons
         "fa-igloo" => "\\f7ae",
         "fa-image" => "\\f03e",
         "fa-image-polaroid" => "\\f8c4",
-        "fa-images" => "\\f302",
+        "fa-img" => "\\f302",
         "fa-imdb" => "\\f2d8",
         "fa-inbox" => "\\f01c",
         "fa-inbox-in" => "\\f310",

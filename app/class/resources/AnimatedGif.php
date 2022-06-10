@@ -38,7 +38,7 @@ class AnimatedGif
     private $image = '';
 
     /**
-     * The array of images to stack
+     * The array of img to stack
      * @var array
      */
     private $buffer = array();
@@ -69,8 +69,8 @@ class AnimatedGif
 
     /**
      * Encode an animated gif
-     * @param array $source_images An array of binary source images
-     * @param array $image_delays The delays associated with the source images
+     * @param array $source_images An array of binary source img
+     * @param array $image_delays The delays associated with the source img
      * @param type $number_of_loops The number of times to loop
      * @param int $transparent_colour_red
      * @param int $transparent_colour_green
@@ -108,8 +108,8 @@ class AnimatedGif
     }
 
     /**
-     * Buffer the images and check to make sure they are vaild
-     * @param array $source_images the array of source images
+     * Buffer the img and check to make sure they are vaild
+     * @param array $source_images the array of source img
      * @throws Exception
      */
     private function buffer_images($source_images)

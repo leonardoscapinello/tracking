@@ -18,6 +18,7 @@ class Modules
     private $is_active;
     private $is_dashboard;
     private $is_full_width;
+    private $is_domain_required;
     private $launch_time;
     private $insert_time;
     private $update_time;
@@ -35,10 +36,8 @@ class Modules
             $module_slug = get_request("module_slug", true, false);
             $text = new Text();
             $database = new Database();
-            $database->query('SELECT cr.id_modules, cr.id_modules_category, cr.id_account, cr.title, cr.icon, cr.description, cr.model, cr.slug, cr.load_file, cr.is_private, cr.is_writable, cr.is_sidebar_visible, cr.is_active, cr.launch_time, cr.insert_time, cr.update_time, cr.disable_time, cc.category_name, cc.slug AS \'category_slug\', cc.display_heading, cr.is_dashboard, cr.is_full_width FROM modules cr LEFT JOIN modules_categories cc on cr.id_modules_category = cc.id_modules_category WHERE cr.slug = ? OR (cr.slug = ? AND cc.slug = ?)');
+            $database->query('SELECT cr.id_modules, cr.id_modules_category, cr.id_account, cr.title, cr.icon, cr.description, cr.model, cr.slug, cr.load_file, cr.is_private, cr.is_writable, cr.is_sidebar_visible, cr.is_active, cr.launch_time, cr.insert_time, cr.update_time, cr.disable_time, cc.category_name, cc.slug AS \'category_slug\', cc.display_heading, cr.is_dashboard, cr.is_full_width, cr.is_domain_required FROM modules cr LEFT JOIN modules_categories cc on cr.id_modules_category = cc.id_modules_category WHERE cr.slug = ?');
             $database->bind(1, $module_slug);
-            $database->bind(2, $module_slug);
-            $database->bind(3, $module_category);
             $result = $database->resultsetObject();
             if ($result && count(get_object_vars($result)) > 0) {
                 $this->modules_exists = true;
@@ -105,45 +104,48 @@ class Modules
                 $display_heading = $results[$i]['display_heading'];
                 $navigation = $results[$i]['navigation'];
 
-                if ($last_category !== $current_category) {
-                    if ($i > 0) $html .= "</div>";
-                    if ("Y" === $display_heading) $html .= "<div class=\"sidebar-heading heading-text\">" . translate($category_name) . "</div>";
-                    $html .= "<div class=\"sidebar-list\">";
-                }
+                if ($current_category !== $last_category) {
 
-                if (not_empty_bool($navigation)) {
-                    $nav_split = explode(";", $navigation);
+                    $html .= "<ul class=\"nav bg\">";
+                    if ("Y" === $display_heading) {
+                        $html .= "<li class=\"nav-header hidden-folded\"><span class=\"text-muted\">" . strtoupper($category_name) . "</span></li>";
+                    }
 
-                    if (count($nav_split) > 0) {
-                        for ($x = 0; $x < count($nav_split); $x++) {
+                    if (not_empty_bool($navigation)) {
+                        $nav_split = explode(";", $navigation);
+                        if (count($nav_split) > 0) {
+                            for ($x = 0; $x < count($nav_split); $x++) {
 
-                            $item_line = $nav_split[$x];
-                            $item_line_split = explode(",", $item_line);
-                            if (count($item_line_split) > 0) {
-                                $id_modules = $item_line_split[0];
-                                $title = $item_line_split[1];
-                                $icon = $item_line_split[2];
-                                $is_private = $item_line_split[3];
-                                $modules_slug = $item_line_split[4];
-                                $html .= "<a class=\"sidebar-item\" href=\"" . $this->modules_link($category_slug, $modules_slug) . "\">";
-                                $html .= "    <div class=\"sidebar-icon-wrapper \">" . $this->icon($icon) . "</div>";
-                                $html .= "    <div class=\"sidebar-text-wrapper \">" . translate($title) . "</div>";
-                                $html .= "</a>";
+                                $item_line = $nav_split[$x];
+                                $item_line_split = explode(",", $item_line);
+                                if (count($item_line_split) > 0) {
+                                    $id_modules = $item_line_split[0];
+                                    $title = $item_line_split[1];
+                                    $icon = $item_line_split[2];
+                                    $is_private = $item_line_split[3];
+                                    $modules_slug = $item_line_split[4];
+
+                                    $html .= "<li>";
+                                    $html .= "    <a href=\"" . $this->getModuleLinkBySlug($category_slug, $modules_slug) . "\">";
+                                    $html .= "        <span class=\"nav-icon text-primary\"><i data-feather=\"" . $icon . "\"></i></span>";
+                                    $html .= "        <span class=\"nav-text\">" . $title . "</span>";
+                                    $html .= "    </a>";
+                                    $html .= "</li>";
+
+
+                                }
+
+
                             }
-
-
                         }
                     }
 
+
                 }
 
-                if ($i === (count($results) - 1)) {
-                    $html .= "</div>";
-                }
-
-                $last_category = $current_category;
 
             }
+
             return $html;
         } catch (Exception $exception) {
             logger($exception);
@@ -208,13 +210,13 @@ class Modules
         return $icon;
     }
 
-    private function modules_link($category_slug, $modules_slug): string
+
+    private function getModuleLinkBySlug($category_slug, $modules_slug): string
     {
         $url = new URL();
-        if ($modules_slug === "index") {
-            return $url->application("modules")->page($category_slug)->output();
-        }
-        return $url->application("modules")->page($category_slug . "/" . $modules_slug)->output();
+        //if (!not_empty_bool($category_slug)) return $url->application("dashboard")->page($modules_slug)->output();
+        //return $url->application("dashboard")->page($category_slug . "/" . $modules_slug)->output();
+        return $url->application("dashboard")->page($modules_slug)->output();
     }
 
 
@@ -284,6 +286,12 @@ class Modules
     }
 
 
+    public function isDomainRequired(): bool
+    {
+        return $this->is_domain_required == "Y";
+    }
+
+
     public function isSidebarVisible(): bool
     {
         return $this->is_sidebar_visible == "Y";
@@ -336,13 +344,13 @@ class Modules
         return $this->modules_exists == "Y";
     }
 
-    public function get()
+    public function get(): ?string
     {
         try {
             if ($this->isModulesExists()) {
-                $file = DIRNAME . "/../../routes/" . $this->getCategorySlug() . "/" . $this->getLoadFile();
+                $file = DIRNAME . "../../routes/" . $this->getCategorySlug() . "/" . $this->getLoadFile();
                 if (not_empty($file)) return $file;
-            }else{
+            } else {
                 echo 'Module not exists';
             }
         } catch (Exception $exception) {
