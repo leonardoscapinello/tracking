@@ -12,6 +12,7 @@ class Modules
     private $model;
     private $slug;
     private $load_file;
+    private $load_script;
     private $is_private;
     private $is_writable;
     private $is_sidebar_visible;
@@ -36,7 +37,7 @@ class Modules
             $module_slug = get_request("module_slug", true, false);
             $text = new Text();
             $database = new Database();
-            $database->query('SELECT cr.id_modules, cr.id_modules_category, cr.id_account, cr.title, cr.icon, cr.description, cr.model, cr.slug, cr.load_file, cr.is_private, cr.is_writable, cr.is_sidebar_visible, cr.is_active, cr.launch_time, cr.insert_time, cr.update_time, cr.disable_time, cc.category_name, cc.slug AS \'category_slug\', cc.display_heading, cr.is_dashboard, cr.is_full_width, cr.is_domain_required FROM modules cr LEFT JOIN modules_categories cc on cr.id_modules_category = cc.id_modules_category WHERE cr.slug = ?');
+            $database->query('SELECT cr.id_modules, cr.id_modules_category, cr.id_account, cr.title, cr.icon, cr.description, cr.model, cr.slug, cr.load_file, cr.is_private, cr.is_writable, cr.is_sidebar_visible, cr.is_active, cr.launch_time, cr.insert_time, cr.update_time, cr.disable_time, cc.category_name, cc.slug AS \'category_slug\', cc.display_heading, cr.is_dashboard, cr.is_full_width, cr.is_domain_required, cr.load_script FROM modules cr LEFT JOIN modules_categories cc on cr.id_modules_category = cc.id_modules_category WHERE cr.slug = ?');
             $database->bind(1, $module_slug);
             $result = $database->resultsetObject();
             if ($result && count(get_object_vars($result)) > 0) {
@@ -50,6 +51,7 @@ class Modules
         }
 
     }
+
 
     public function loadById($id_modules)
     {
@@ -217,6 +219,11 @@ class Modules
         //if (!not_empty_bool($category_slug)) return $url->application("dashboard")->page($modules_slug)->output();
         //return $url->application("dashboard")->page($category_slug . "/" . $modules_slug)->output();
         return $url->application("dashboard")->page($modules_slug)->output();
+    }
+
+    public function getLoadScript(): ?string
+    {
+        return $this->load_script;
     }
 
 

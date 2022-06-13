@@ -13533,7 +13533,7 @@ function filterLegacyEventInstances(legacyEventInstances, legacyQuery) {
 
 Calendar.defaults = {
 
-	titleRangeSeparator: ' \u2013 ', // en dash
+	titleRangeSeparator: ' \u2013 ', // en dashboard
 	monthYearFormat: 'MMMM YYYY', // required for en. other locales rely on datepicker computable option
 
 	defaultTimedEventDuration: '02:00:00',

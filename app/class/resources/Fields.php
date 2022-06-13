@@ -152,7 +152,6 @@ class Fields
     public function options(array $options): Fields
     {
         $this->_options = $options;
-        $this->optionsHTML();
         return $this;
     }
 
@@ -228,6 +227,7 @@ class Fields
     {
         $output = $this->_template;
 
+        $this->optionsHTML();
 
         $output = str_replace("%class", $this->_class, $output);
         $output = str_replace("%labelclass", $this->_labelclass, $output);

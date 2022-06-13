@@ -28,6 +28,7 @@ ob_start("sanitize_output");
     <?= $static->css([
         "bootstrap.css",
         "theme.css",
+        "nice-select.css",
         "style.css",
     ])->replace("static/fonts/", $env->get("APP_URL") . "/static/fonts/")->minify()->output("trackwithjames.css")->embed();
     ?>
@@ -63,6 +64,7 @@ ob_start("sanitize_output");
                     <li>
                         <div class="p-3 nav-fold">
 
+
                             <?php
                             $list = $domains->getAllDomains();
                             if (count($list) > 0) { ?>
@@ -84,6 +86,8 @@ ob_start("sanitize_output");
                                     <?php } ?>
                                 </a>
                                 <div class="dropdown-menu text-sm">
+
+
                                     <?php for ($i = 0; $i < count($list); $i++) { ?>
                                         <a class="dropdown-item"
                                            href="<?= $url->actualPage()->add(["set" => $list[$i]['public_key']])->actualAsNext()->output() ?>"
@@ -91,6 +95,22 @@ ob_start("sanitize_output");
                                             <?= $text->set($list[$i]['domain'])->short(30)->output() ?>
                                         </a>
                                     <?php } ?>
+
+
+                                    <a class="dropdown-item"
+                                       style="border: 1px rgba(0,0,0,.05) solid;margin-top:20px;line-height:30px;border-left: none;border-right: none"
+                                       href="<?= $url->application("dashboard")->page("new-domain")->output() ?>"
+                                       data-pjax-state="">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                                             viewBox="0 0 24 24" style="position: relative;top: -1px"
+                                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                             stroke-linejoin="round" class="feather feather-plus">
+                                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        </svg>
+                                        <?= translate("Register new domain") ?>
+                                    </a>
+
                                 </div>
                             <?php } else { ?>
                                 <a href="<?= $url->application("dashboard")->page("new-domain")->output() ?>"
@@ -423,6 +443,20 @@ ob_start("sanitize_output");
 <script src="<?= $env->get("APP_URL") ?>/static/js/theme.js"></script>
 <script src="<?= $env->get("APP_URL") ?>/static/js/utils.js"></script>
 
+<?php
+if (not_empty_bool($modules->getLoadScript())) {
+    echo $static->js([
+        "niceselect/jquery.nice-select.js",
+        "dashboard/main.js",
+        "dashboard/" . $modules->getLoadScript()
+    ])->embed();
+} ?>
+
+<script>
+    $(document).ready(function () {
+        $('select').niceSelect();
+    });
+</script>
 
 <!-- endbuild -->
 </body>

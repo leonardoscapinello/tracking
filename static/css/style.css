@@ -5,3 +5,83 @@ Custom css
     padding: 0;
     margin: 0;
 }
+
+.dns-step-block {
+    background: #F5F7F8;
+    padding: 20px;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.dns-step-block .dns-line {
+    display: block;
+}
+
+.dns-step-block .dns-line.strong {
+    font-weight: 700;
+}
+
+.dns-step-block .dns-line.strong.small {
+    font-size: .8em;
+}
+
+.fields-view {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    margin-top: 26px;
+}
+
+.fields-view .dns-fields {
+    border: 1px rgba(0, 0, 0, .1) solid;
+    padding: 10px;
+    margin: 0 5px 0 5px;
+    background: #FFF;
+    border-radius: 3px;
+    position: relative;
+    min-width: 60px;
+    text-align: left;
+}
+
+.fields-view .dns-fields:before {
+    content: attr(data-label);
+    position: absolute;
+    top: -18px;
+    left: 0;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+@media screen and (max-width: 960px) {
+    .fields-view {
+        display: block;
+    }
+
+    .fields-view .dns-fields {
+        display: block;
+        white-space: nowrap;
+        overflow-x: auto;
+        margin: 10px 0;
+        padding-left: 50px;
+    }
+
+    .fields-view .dns-fields:before {
+        content: attr(data-label);
+        position: absolute;
+        top: 50%;
+        left: 12px;
+        transform: translateY(-50%);
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+
+}
+
+.nice-select {
+    clear: both;
+    float: none;
+    line-height: 30px;
+}

@@ -26,7 +26,6 @@ $domains = new Domains();
 
 define("API_URL", $env->get("API_URL"));
 
-
 SassCompiler::run(DIRNAME . "../../static/scss/", DIRNAME . "../../static/css/");
 SassCompiler::run(DIRNAME . "../../static/scss/additional-styles/", DIRNAME . "../../static/css/additional-styles/");
 

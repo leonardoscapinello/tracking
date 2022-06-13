@@ -29,8 +29,8 @@ class StaticFilesJS
                 } else {
                     $filename = $path_parts['basename'];
                 }
-                $path = $env->get("APP_URL") . "/scripts/" . $filename;
-                $output .= "<script type=\"text/js\" src=\"$path\"></script>";
+                $path = $env->get("APP_URL") . "/js/" . $filename;
+                $output .= "<script src=\"$path\"></script>";
             }
         }
         return $output;
@@ -44,7 +44,7 @@ class StaticFilesJS
         $output = "";
         foreach ($this->_files as $file) {
             $path = $env->get("APP_STATIC") . "/js/" . $file . "?v=" . $text->random(32)->output();
-            $output .= "<script type='text/js' src='" . $path . "'></script>" . PHP_EOL;
+            $output .= "<script src='" . $path . "'></script>" . PHP_EOL;
         }
         return $output;
     }

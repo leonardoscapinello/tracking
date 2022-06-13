@@ -78,6 +78,9 @@ class URL
             case "uploads":
                 $this->_application_url = "uploads/";
                 break;
+            case "owned-domain":
+                $this->_application_url = "owned-domain/";
+                break;
             default:
                 $this->_application_url = "";
                 break;
@@ -97,7 +100,8 @@ class URL
         try {
             $time = $this->_wait;
             if (!not_empty($time)) $time = 0;
-            header("Refresh:$time;url=" . $this->_url);
+            if ($time > 0) header("Refresh:$time;url=" . $this->_url);
+            else header("location: " . $this->_url);
         } catch (Exception $exception) {
             logger($exception);
         }

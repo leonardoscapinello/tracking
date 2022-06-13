@@ -20,7 +20,7 @@ RewriteRule ^api/v1/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)$         
 RewriteRule ^uploads/(.*)$          ./public/uploads/$1 [L,NC,QSA]
 
 
-RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)/?$     ./index.php?module_slug=$1&id=$2  [L,NC,QSA]
-RewriteRule ^([a-zA-Z0-9_-]+)/?$                ./index.php?module_slug=$1  [L,NC,QSA]
+RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)/?$     ./index.php?module_slug=$1&id=$2&app=dashboard  [L,NC,QSA]
+RewriteRule ^([a-zA-Z0-9_-]+)/?$                ./index.php?module_slug=$1&app=dashboard  [L,NC,QSA]
 
 

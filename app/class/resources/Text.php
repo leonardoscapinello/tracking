@@ -220,7 +220,6 @@ class Text
 
     public function equalsIgnoreCase($value, $compare): bool
     {
-
         if (!not_empty($value) || !not_empty($compare)) return false;
         $text = new Text();
         return trim($text->set($value)->lowercase()->output()) === trim($text->set($compare)->lowercase()->output());

@@ -10,35 +10,50 @@ class Domains
     private $domain_token;
     private $is_active;
     private $is_verified;
-    private $verify_method;
+    private $validation_method;
     private $verification_key;
     private $insert_time;
     private $verify_time;
+    private $verification_meta_name = "james-domain";
 
 
     public function __construct()
     {
         try {
-
-            $set = get_request("set");
-            if (not_empty_bool($set)) {
-                $url = new URL();
-                $env = new Env();
-                $rootDomain = $url->getDomain($env->get("APP_URL"));
-                $cookie = setcookie("_domain", $set, (time() + (60 * 60 * 24 * 30 * 12)), '/', $rootDomain);
-                if ($cookie) {
-                    $url->goToNext();
+            if (get_request("app") === "dashboard") {
+                $set = get_request("set");
+                if (not_empty_bool($set)) {
+                    $this->setDomainCookie($set);
+                } else {
+                    $this->checkDomainSetup();
                 }
-            } else {
-                $this->checkDomainSetup();
             }
+
             if (not_empty_bool($this->getDomainByCookie())) {
                 $this->loadDomainByPublicKey($this->getDomainByCookie());
+            }
+
+
+        } catch (Exception $exception) {
+            error_log($exception);
+        }
+    }
+
+    public function setDomainCookie($public_key)
+    {
+        try {
+            $url = new URL();
+            $env = new Env();
+            $rootDomain = $url->getDomain($env->get("APP_URL"));
+            $cookie = setcookie("_domain", $public_key, (time() + (60 * 60 * 24 * 30 * 12)), '/', $rootDomain);
+            if ($cookie && not_empty_bool(get_request("next"))) {
+                $url->goToNext();
             }
         } catch (Exception $exception) {
             error_log($exception);
         }
     }
+
 
     public function checkDomainSetup()
     {
@@ -74,7 +89,8 @@ class Domains
         }
     }
 
-    public function getAllDomains()
+    public
+    function getAllDomains()
     {
         try {
             $database = new Database();
@@ -88,107 +104,151 @@ class Domains
         }
     }
 
-    public function getCurrentDomain()
+    public
+    function updateValidationMethod($validation_method, $public_key)
+    {
+        try {
+            if ($validation_method === "dns" || $validation_method === "html" || $validation_method === "meta") {
+                $database = new Database();
+                $database->query("UPDATE domains SET validation_method = ? WHERE public_key = ?");
+                $database->bind(1, $validation_method);
+                $database->bind(2, $public_key);
+                $database->execute();
+                return true;
+            }
+            return false;
+        } catch (Exception $exception) {
+            error_log($exception);
+        }
+    }
+
+    public
+    function getCurrentDomain()
     {
         return get_request("_domain",);
     }
 
-    public function getDomain()
+    public
+    function getDomain()
     {
         return $this->domain;
     }
 
-    public function getDomainByCookie()
+    public
+    function getDomainByCookie()
     {
         return get_request("_domain");
     }
 
-    public function setDomain($domain): Domains
+    public
+    function setDomain($domain): Domains
     {
         $this->domain = $domain;
         return $this;
     }
 
-    public function getDomainToken()
+    public
+    function getDomainToken()
     {
         return $this->domain_token;
     }
 
-    public function setDomainToken($domain_token): Domains
+    public
+    function setDomainToken($domain_token): Domains
     {
         $this->domain_token = $domain_token;
         return $this;
     }
 
-    public function getIsActive(): bool
+    public
+    function getIsActive(): bool
     {
         return $this->is_active === "Y";
     }
 
-    public function setIsActive($is_active): Domains
+    public
+    function setIsActive($is_active): Domains
     {
         $this->is_active = $is_active;
         return $this;
     }
 
-    public function getIsVerified(): bool
+    public
+    function getIsVerified(): bool
     {
         return $this->is_verified === "Y";
     }
 
-    public function setIsVerified($is_verified): Domains
+    public
+    function setIsVerified($is_verified): Domains
     {
         $this->is_verified = $is_verified;
         return $this;
     }
 
-    public function getInsertTime()
+    public
+    function getInsertTime()
     {
         return $this->insert_time;
     }
 
-    public function getVerifyTime()
+    public
+    function getVerifyTime()
     {
         return $this->verify_time;
     }
 
 
-    public function getPublicKey()
+    public
+    function getPublicKey()
     {
         return $this->public_key;
     }
 
-    public function getVerifyMethod()
+    public
+    function getValidationMethod()
     {
-        return $this->verify_method;
+        return $this->validation_method;
     }
 
-    public function getVerificationKey()
+    public
+    function getVerificationKey()
     {
         return $this->verification_key;
     }
 
 
-    public function createToken(): string
+    public
+    function createToken(): string
     {
         $text = new Text();
         return $text->random(6)->uppercase()->output();
     }
 
-    public function createPublicKey(): string
+    public
+    function createPublicKey(): string
     {
         $text = new Text();
         return $text->uuid();
     }
 
-    public function createVerificationKey(): string
+    public
+    function getVerificationMetaName(): string
     {
-        $text = new Text();
-        return $text->random(128)->output();
+        return $this->verification_meta_name;
     }
 
 
-    public function store(): ?string
+    public
+    function createVerificationKey(): string
+    {
+        $text = new Text();
+        return $text->random(30)->output();
+    }
+
+
+    public
+    function store(): ?string
     {
         try {
             $session = new AccountsSession();
@@ -207,6 +267,7 @@ class Domains
                 $database->bind(7, $verification_key);
                 $database->execute();
                 $lid = $database->lastInsertId();
+                $this->setDomainCookie($public_key);
                 if (not_empty_bool($lid)) return $public_key;
             }
         } catch (Exception $exception) {
