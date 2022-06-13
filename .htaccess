@@ -18,9 +18,10 @@ RewriteRule ^api/v1/([a-zA-Z0-9_-]+)/([0-9]+)$                  ./routes/api/v1/
 RewriteRule ^api/v1/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)$          ./routes/api/v1/index.php?route=$1&file=$2 [L,NC,QSA]
 RewriteRule ^api/v1/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)$          ./routes/api/v1/index.php?route=$1&file=$2&id=$3 [L,NC,QSA]
 RewriteRule ^uploads/(.*)$          ./public/uploads/$1 [L,NC,QSA]
+RewriteRule ^owned-domain/([a-zA-Z0-9_-]+)/?$          ./routes/api/v1/index.php?route=domains&file=download-template&id=$1 [L,NC,QSA]
 
 
-RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)/?$     ./index.php?module_slug=$1&id=$2&app=dashboard  [L,NC,QSA]
-RewriteRule ^([a-zA-Z0-9_-]+)/?$                ./index.php?module_slug=$1&app=dashboard  [L,NC,QSA]
+RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)/?$       ./index.php?module_slug=$1&id=$2&app=dashboard  [L,NC,QSA]
+RewriteRule ^([a-zA-Z0-9_-]+)/?$                        ./index.php?module_slug=$1&app=dashboard  [L,NC,QSA]
 
 

@@ -78,7 +78,7 @@ class URL
             case "uploads":
                 $this->_application_url = "uploads/";
                 break;
-            case "owned-domain":
+            case "download-domain-file":
                 $this->_application_url = "owned-domain/";
                 break;
             default:
@@ -130,6 +130,12 @@ class URL
         $this->_url = $this->_url . "/" . $id;
         return $this;
     }
+
+    public function getHost($url): ?string
+    {
+        return parse_url($url, PHP_URL_HOST);
+    }
+
 
     /* REMOVE QUERY STRINGS */
     public function remove($specified): URL

@@ -95,3 +95,6 @@ You will know that the HTML verification file has been successfully uploaded if 
 Access destination path=Access destination path
 Verify Domain=Verify Domain
 Register new domain=Register new domain
+The domain you entered could not be found, please check that everything is correct and try again.=The domain you entered could not be found, please check that everything is correct and try again.
+We couldn't find this domain, it may not be active yet.=We couldn't find this domain, it may not be active yet.
+The domain %s cannot be validated, some methods can take up to 72 hours to propagate across the network.=The domain %s cannot be validated, some methods can take up to 72 hours to propagate across the network.
