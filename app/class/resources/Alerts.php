@@ -36,7 +36,7 @@ class Alerts
         $result .= '    <div class="' . $this->_class . '">';
         $result .= '        <div class="spc-icon"></div>';
         $result .= '        <div class="spc-text">';
-        $result .= '            <p>' . translate($this->_text) . '</p>';
+        $result .= '            <div>' . translate($this->_text) . '</div>';
         $result .= '        </div>';
         $result .= '    </div>';
         $result .= '</div>';

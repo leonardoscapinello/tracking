@@ -1,0 +1,123 @@
+
+.notify-corner {
+    z-index: 30000 !important;
+}
+
+.notify-container:not(.notify-danger){
+    width: 100%;
+    position: relative;
+    animation: success 300ms forwards ease-in-out;
+}
+
+.notify-container{
+    margin-bottom: 10px;
+}
+
+@keyframes success {
+    0%{
+        transform: scale(.9);
+    }
+    100%{
+        transform: scale(1);
+    }
+}
+
+.notify-base {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    background: #293e52;
+    border-radius: 5px;
+    -webkit-box-shadow: -3px 0 10px 0 rgba(41, 62, 82, .1);
+    box-shadow: -3px 0 10px 0 rgba(41, 62, 82, .1);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    /* max-width: 380px; */
+    /* min-width: 300px; */
+    padding: 15px 10px;
+    box-sizing: border-box;
+    position: relative;
+    color: #FFFFFF;
+    z-index: 30000;
+    margin: 10px 0 0 0;
+    font-weight: 400;
+    line-height: 1.24;
+}
+
+.notify-base.shake {
+    animation: shake 0.5s;
+}
+
+.spc-icon {
+    width: 50px;
+    color: #FFFFFF;
+    font-family: "Font Awesome 6 Pro", serif;
+    font-size: 30px;
+    box-sizing: border-box;
+    background: rgba(0, 206, 140, .1);
+    border-radius: 3px;
+    margin-right: 18px;
+    min-width: 50px;
+    text-align: center;
+    max-width: 50px;
+    line-height: 50px;
+}
+
+.spc-text {
+    font-size: 14px;
+    flex: 1;
+    padding-right: 30px;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+}
+
+
+.spc-text p{
+    display: block;
+    align-self: center;
+}
+
+.notify-success .spc-icon:before {
+    color: #00ce8c;
+    content: "\f00c";
+}
+
+
+.notify-warning .spc-icon {
+    background: rgba(255, 166, 30, .1)
+}
+
+
+.notify-warning .spc-icon:before {
+    color: #ffa61e;
+    content: "\f12a";
+}
+
+
+.notify-danger .spc-icon {
+    background: #3E414F;
+}
+
+.notify-danger .spc-icon:before {
+    color: #ec4a2c;
+    content: "\f00d";
+}
+
+
+@keyframes shake {
+    10%, 90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+    20%, 80% {
+        transform: translate3d(2px, 0, 0);
+    }
+    30%, 50%, 70% {
+        transform: translate3d(-6px, 0, 0);
+    }
+    40%, 60% {
+        transform: translate3d(6px, 0, 0);
+    }
+}

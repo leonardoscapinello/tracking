@@ -40,7 +40,9 @@
     "codex-team/editor.js": "dev-master",
     "google/apiclient": "^2.0",
     "scssphp/scssphp": "^1.10.3",
-    "panique/php-sass": "1.0"
+    "panique/php-sass": "1.0",
+    "dcai/curl": "^0.2.2",
+    "phpmailer/phpmailer": "^6.6"
   },
   "config": {
     "vendor-dir": "app/vendor/",

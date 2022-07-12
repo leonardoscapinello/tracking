@@ -356,9 +356,9 @@ class Modules
         try {
             if ($this->isModulesExists()) {
                 $file = DIRNAME . "../../routes/" . $this->getCategorySlug() . "/" . $this->getLoadFile();
-                if (not_empty($file)) return $file;
+                if (not_empty($file) && file_exists($file)) return $file;
             } else {
-                echo 'Module not exists';
+                //echo 'Module not exists';
             }
         } catch (Exception $exception) {
             error_log($exception);

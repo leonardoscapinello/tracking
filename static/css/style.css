@@ -1,6 +1,11 @@
 /*
 Custom css
 */
+html,
+body {
+    font-family: 'SFProText', sans-serif;
+}
+
 .form-meta {
     padding: 0;
     margin: 0;
@@ -76,12 +81,69 @@ Custom css
         font-size: 12px;
         font-weight: 600;
     }
-
-
 }
 
 .nice-select {
     clear: both;
     float: none;
     line-height: 30px;
+}
+
+.authenticate-widget {
+    display: inline-block;
+    background: #FFFFFF;
+    max-width: 389px;
+    margin: 30px auto;
+    padding: 40px;
+    border-radius: 5px;
+}
+
+.authenticate-widget .branding {
+    width: 32px;
+    height: auto;
+    margin: 0 auto 20px auto;
+}
+
+.authenticate-widget h1 {
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.authenticate-widget .action-links {
+    margin: 10px 0 0 0;
+}
+
+.authenticate-widget .action-links ul {
+    display: block;
+    text-align: center;
+    margin: 20px 0 0 0;
+    padding: 0;
+}
+
+.authenticate-widget .action-links ul li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.authenticate-widget .action-links ul li a {
+    text-decoration: none;
+    color: #3b5bfd;
+    font-size: .94rem;
+    font-weight: 500;
+}
+
+.center-layout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.copyright-terms {
+    text-align: center;
+    font-size: 11px;
+    color: rgba(0, 0, 0, .5);
+    margin-top: 10px;
 }

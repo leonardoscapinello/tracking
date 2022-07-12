@@ -2,8 +2,10 @@
 $register_class = "";
 $validation_class = "active";
 $error = "";
+
+
 if ($domains->getIsVerified()) {
-    $url->application("dashboard")->page("edit-domain")->setId($domains->getPublicKey())->redirect();
+    $url->application("dashboard")->page("dashboard")->redirect();
     die;
 }
 

@@ -33,6 +33,10 @@ class ComposerStaticInit753f25465862702dd77f35e3af847ca9
         array (
             'enshrined\\svgSanitize\\' => 22,
         ),
+        'd' => 
+        array (
+            'dcai\\' => 5,
+        ),
         'W' => 
         array (
             'WebPConvert\\' => 12,
@@ -62,6 +66,7 @@ class ComposerStaticInit753f25465862702dd77f35e3af847ca9
             'Psr\\Cache\\' => 10,
             'PhpOption\\' => 10,
             'ParagonIE\\ConstantTime\\' => 23,
+            'PHPMailer\\PHPMailer\\' => 20,
         ),
         'O' => 
         array (
@@ -128,6 +133,10 @@ class ComposerStaticInit753f25465862702dd77f35e3af847ca9
         'enshrined\\svgSanitize\\' => 
         array (
             0 => __DIR__ . '/..' . '/enshrined/svg-sanitize/src',
+        ),
+        'dcai\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/dcai/curl/src/dcai',
         ),
         'WebPConvert\\' => 
         array (
@@ -201,6 +210,10 @@ class ComposerStaticInit753f25465862702dd77f35e3af847ca9
         'ParagonIE\\ConstantTime\\' => 
         array (
             0 => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src',
+        ),
+        'PHPMailer\\PHPMailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
         'Overtrue\\Pinyin\\' => 
         array (

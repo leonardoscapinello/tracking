@@ -1,0 +1,21 @@
+{
+    "name": "dcai/curl",
+    "license": "GPL-3.0",
+    "description": "A friendly curl wrapper for PHP.",
+    "authors": [
+        {
+            "name": "Dongsheng Cai",
+            "email": "d@tux.im",
+            "homepage": "https://dongsheng.org",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "dcai\\": "src/dcai/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7"
+    }
+}

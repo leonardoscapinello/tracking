@@ -23,6 +23,7 @@ $modules = new Modules();
 $account = new Accounts();
 $text = new Text();
 $domains = new Domains();
+$numeric = new Numeric();
 
 define("API_URL", $env->get("API_URL"));
 

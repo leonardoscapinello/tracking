@@ -1,159 +1,465 @@
 <?php
 
+use GuzzleHttp\Client;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 class Notification
 {
 
-    public function register()
+    private $id_notification;
+    private $id_account;
+    private $id_instance;
+    private $id_zaap;
+    private $id_message;
+    private $message_token;
+    private $subject;
+    private $message;
+    private $preheader;
+    private $image;
+    private $image_type;
+    private $audio;
+    private $document;
+    private $message_link;
+    private $submit_type;
+    private $is_submit;
+    private $is_active;
+    private $is_buttons;
+    private $insert_time;
+    private $submit_time;
+    private $schedule_time;
+
+    private $_paragraph;
+    private $_buttons = [];
+
+
+    public function type($type): Notification
     {
-        try {
-            $message_text = get_request("message_text");
-            $message_id = get_request("id");
-            $notification = file_get_contents('php://input');
-            parse_str($notification, $notification);
-            $date = new Date();
-            $contact = array();
-            if (array_key_exists("contact", $notification)) {
-                $contact = $notification['contact'];
-            }
-
-            $notification_token = $this->token();
-            $full_name = $this->get("first_name", $contact);
-            $email_address = $this->get("email", $contact);
-            $phone_number = $this->get("phone", $contact);
-
-            $schedule_time = get_request("schedule_time");
-            $plus_time = get_request("plus_time");
-
-            if ($schedule_time === null) $schedule_time = date("Y-m-d H:i:s");
-
-            $date->set($schedule_time);
-            $date->format("Y-m-d H:i:s");
-            if ($plus_time !== null) $date->add($plus_time);
-
-            $phone_number = $this->phone($phone_number);
-            $schedule_time = $date->output();
-
-            $database = new Database();
-
-            if ($message_id !== null && $message_id !== "") {
-                $database->query("SELECT message_text FROM notifications_templates WHERE id_template = ?");
-                $database->bind(1, $message_id);
-                $result = $database->resultSet();
-                if (count($result) > 0) $message_text = $result[0]['message_text'];
-            }
-
-            if ($message_text === null || $phone_number === null) return false;
-
-            $message_text = str_replace("{{email_address}}", $email_address, $message_text);
-            $message_text = str_replace("{{full_name}}", $full_name, $message_text);
-            $message_text = str_replace("{{phone_number}}", $phone_number, $message_text);
-            $message_text = str_replace("{{break}}", PHP_EOL, $message_text);
-
-
-            $database->query("INSERT INTO notifications (notification_token, full_name, email_address, phone_number, message_text, schedule_time) VALUES (?, ?, ?, ?, ?, ?)");
-            $database->bind(1, $notification_token);
-            $database->bind(2, $full_name);
-            $database->bind(3, $email_address);
-            $database->bind(4, $phone_number);
-            $database->bind(5, $message_text);
-            $database->bind(6, $schedule_time);
-            $database->execute();
-
-        } catch (Exception $exception) {
-            logger($exception);
-        }
+        if ($type === "dashboard" || $type === "email" || $type === "whatsapp" || $type === "sms") $this->submit_type = strtolower($type);
+        else $this->submit_type = "dashboard";
+        return $this;
     }
 
-    public function bulk()
+    public function image_type($type): Notification
+    {
+        $this->image_type = (strtolower($type) === "sticker" ? "sticker" : "image");
+        return $this;
+    }
+
+    public function token(): string
+    {
+        $text = new Text();
+        return $text->uuid();
+    }
+
+    public function image($file): Notification
     {
         try {
-            $text = new Text();
-            $database = new Database();
-            $database->query("SELECT id_notification, full_name, email_address, phone_number, message_text FROM notifications WHERE (NOW() >= schedule_time OR schedule_time IS NULL OR schedule_time = '') AND (submit_time IS NULL OR submit_time = '')");
-            $results = $database->resultSet();
-            for ($i = 0; $i < count($results); $i++) {
-                $message = $results[$i]['message_text'];
-                $email_address = $results[$i]["email_address"];
-                $full_name = $results[$i]["full_name"];
-                $phone_number = $this->phone($results[$i]["phone_number"]);
-                $message = str_replace("{{email_address}}", $email_address, $message);
-                $message = str_replace("{{full_name}}", $full_name, $message);
-                $message = str_replace("{{phone_number}}", $phone_number, $message);
-                $message = str_replace("{{break}}", PHP_EOL, $message);
-                if ($phone_number !== null && $message !== null) {
-                    $sent = $this->submit($phone_number, $message);
-                    if ($sent) {
-                        $this->markAsSent($results[$i]["id_notification"]);
-                    }
+            if ($this->submit_type === "whatsapp") {
+                $path = DIRNAME . "../../public/notifications/whatsapp/" . $file;
+                if (file_exists($file)) {
+                    $type = pathinfo($path, PATHINFO_EXTENSION);
+                    $data = file_get_contents($path);
+                    $this->image = 'data:image/' . $type . ';base64,' . base64_encode($data);
                 }
             }
         } catch (Exception $exception) {
-            logger($exception);
-        } catch (\GuzzleHttp\Exception\GuzzleException $e) {
-            logger($e);
+            error_log($exception);
         }
+        return $this;
     }
 
-    public function markAsSent($id_notification)
+    public function audio($file): Notification
+    {
+        try {
+            if ($this->submit_type === "whatsapp") {
+                $path = DIRNAME . "../../public/notifications/whatsapp/" . $file;
+                if (file_exists($file)) {
+                    $type = pathinfo($path, PATHINFO_EXTENSION);
+                    $data = file_get_contents($path);
+                    $this->audio = 'data:audio/' . $type . ';base64,' . base64_encode($data);
+                }
+            }
+        } catch (Exception $exception) {
+            error_log($exception);
+        }
+        return $this;
+    }
+
+    public function p($text): Notification
+    {
+        if ($this->submit_type === "email") $this->_paragraph .= "<p>" . $text . "</p>";
+        if ($this->submit_type === "dashboard") $this->_paragraph .= "<p>" . $text . "</p>";
+        if ($this->submit_type === "whatsapp") $this->_paragraph .= (not_empty_bool($this->_paragraph) ? PHP_EOL . $text : $text);
+        if ($this->submit_type === "sms") $this->_paragraph .= (not_empty_bool($this->_paragraph) ? PHP_EOL . $text : $text);
+        return $this;
+    }
+
+    public function br(): Notification
+    {
+        if ($this->submit_type === "email") $this->_paragraph .= "<br>";
+        if ($this->submit_type === "dashboard") $this->_paragraph .= "<br>";
+        if ($this->submit_type === "whatsapp") $this->_paragraph .= PHP_EOL;
+        if ($this->submit_type === "sms") $this->_paragraph .= PHP_EOL;
+        return $this;
+    }
+
+    public function button($text, $url, $action = "URL"): Notification
+    {
+        if ($this->submit_type === "whatsapp") {
+            $this->is_buttons = "Y";
+            $this->_buttons[] = [
+                "text" => $text,
+                "url" => $url,
+                "action" => (strtoupper($action) === "CALL" || strtoupper($action) === "URL" || strtoupper($action) === "REPLY") ? strtoupper($action) : "URL"
+            ];
+        } elseif ($this->submit_type === "email" || $this->submit_type === "dashboard") {
+            $this->_paragraph .= "<p><a href=\"" . $url . "\" class=\"button button_notification\">" . $text . "</a></p>";
+        } else {
+            $this->_paragraph .= $url;
+        }
+        return $this;
+    }
+
+    public function subject($subject): Notification
+    {
+        $this->subject = translate($subject);
+        return $this;
+    }
+
+    public function preheader($preheader): Notification
+    {
+        $this->preheader = $preheader;
+        return $this;
+    }
+
+    public function schedule($baseTime): Notification
+    {
+        if (not_empty_bool($baseTime)) {
+            $this->schedule_time = date("Y-m-d H:i:s", strtotime($baseTime));
+        }
+        return $this;
+    }
+
+    public function message_link($message_link): Notification
+    {
+        if ($this->submit_type === "whatsapp") {
+            $this->message_link = $message_link;
+        }
+        return $this;
+    }
+
+    public function getInstanceId(): int
     {
         try {
             $database = new Database();
-            $database->query("UPDATE notifications SET submit_time = CURRENT_TIMESTAMP WHERE id_notification = ?");
-            $database->bind(1, $id_notification);
-            $database->execute();
+            $database->query("SELECT * FROM `notifications_instances` WHERE is_active = 'Y' ORDER BY RAND() LIMIT 1");
+            $resultset = $database->resultSet();
+            if (count($resultset) > 0) {
+                return (int)$resultset[0]['id_notifications_instance'];
+            }
         } catch (Exception $exception) {
-            logger($exception);
+            error_log($exception);
+        }
+        return 1;
+    }
+
+
+    private function sanitizeMessage()
+    {
+        $env = new Env();
+        if ($this->submit_type === "email") {
+            $template = file_get_contents(DIRNAME . "../../app/notifications/email-default.html");
+            $template = str_replace("{{logo}}", '<img src="' . DIRNAME . '../../app/public/notifications/email/twj.png" alt="' . $env->get('APP_NAME') . '">', $template);
+            $template = str_replace("{{preheader}}", $this->preheader, $template);
+            $template = str_replace("{{content}}", $this->_paragraph, $template);
+            $template = str_replace("{{year}}", date("Y"), $template);
+            $template = str_replace("{{message_id}}", $this->message_token, $template);
+            $template = str_replace("{{company_name}}", $env->get('APP_NAME'), $template);
+            $search = array(
+                '/\>[^\S ]+/s',     // strip whitespaces after tags, except space
+                '/[^\S ]+\</s',     // strip whitespaces before tags, except space
+                '/(\s)+/s',         // shorten multiple whitespace sequences
+                '/<!--(.|\s)*?-->/' // Remove HTML comments
+            );
+            $replace = array(
+                '>',
+                '<',
+                '\\1',
+                ''
+            );
+            $this->message = preg_replace($search, $replace, $template);
+        } else {
+            $this->message = $this->_paragraph;
         }
     }
 
-    /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    private function submit($number, $message)
+    public function save()
     {
-        $env = new Env();
-        $client = new GuzzleHttp\Client();
-        $response = $client->request(
-            "GET",
-            "https://v1.utalk.chat/send/8z9qmx6/",
-            [
-                'query' => [
-                    "cmd" => "chat",
-                    "to" => $number . "@c.us",
-                    "msg" => $message
-                ]
-            ]
-        );
-        $statusCode = $response->getStatusCode();
-        if ($statusCode >= 200 && $statusCode < 300) return true;
+        try {
+
+            $this->schedule_time = (not_empty_bool(trim($this->schedule_time)) ? $this->schedule_time : date("Y-m-d H:i:s"));
+            $this->message_token = $this->token();
+            $this->sanitizeMessage();
+
+            if ($this->submit_type === "whatsapp") $id = $this->save_whatsapp();
+            elseif ($this->submit_type === "email") $id = $this->save_email();
+            else $id = $this->save_general();
+
+            return $id;
+
+        } catch (Exception $exception) {
+            echo($exception);
+        }
+    }
+
+    public function save_submit()
+    {
+        try {
+            $save = $this->save();
+            $this->submitById($save);
+        } catch (Exception $exception) {
+            echo($exception);
+        }
+    }
+
+    private function submitById($id)
+    {
+        if ($this->submit_type === "email") return $this->submit_email($id);
+        if ($this->submit_type === "whatsapp") return $this->submit_whatsapp($id);
+    }
+
+    private function save_email(): bool
+    {
+        try {
+            $database = new Database();
+            $session = new AccountsSession();
+            $id_account = $session->getAccountId();
+            $database->query("INSERT INTO notifications (id_account, message_token, subject, preheader, message, submit_type, schedule_time) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $database->bind(1, $id_account);
+            $database->bind(2, $this->message_token);
+            $database->bind(3, $this->subject);
+            $database->bind(4, $this->preheader);
+            $database->bind(5, $this->message);
+            $database->bind(6, $this->submit_type);
+            $database->bind(7, $this->schedule_time);
+            $database->execute();
+            $last_id = $database->lastInsertId();
+            return not_empty_bool($last_id) ? $last_id : 0;
+        } catch (Exception $exception) {
+            error_log($exception);
+        }
         return false;
     }
 
-    private function get(string $index, array $array)
-    {
-        if (array_key_exists($index, $array)) {
-            $element = $array[$index];
-            if ($element !== null && $element !== "") return $array[$index];
-        }
-        return null;
-    }
-
-    public function phone(string $phone)
+    private function save_general(): int
     {
         try {
-            $phone = preg_replace('/[^a-z0-9]/i', '', $phone);
-            $length = strlen($phone);
-            if ($length === 11 || $length === 10) return "55" . $phone;
-            return $phone;
+            $database = new Database();
+            $session = new AccountsSession();
+            $id_account = $session->getAccountId();
+            $database->query("INSERT INTO notifications (id_account, message_token, message, submit_type, schedule_time) VALUES (?, ?, ?, ?, ?)");
+            $database->bind(1, $id_account);
+            $database->bind(2, $this->message_token);
+            $database->bind(5, $this->message);
+            $database->bind(6, $this->submit_type);
+            $database->bind(7, $this->schedule_time);
+            $database->execute();
+            $last_id = $database->lastInsertId();
+            return not_empty_bool($last_id) ? $last_id : 0;
         } catch (Exception $exception) {
-            logger($exception);
+            error_log($exception);
         }
+        return false;
     }
 
 
-    private function token(): string
+    private function save_whatsapp(): int
     {
-        return md5(uniqid(date("Y-m-d H:i:s"), true)) . "-" . md5(uniqid(date("d/m/Y H:i:s"), true));
+        try {
+            $database = new Database();
+            $session = new AccountsSession();
+            $id_account = $session->getAccountId();
+            $id_instance = $this->getInstanceId();
+            $database->query("INSERT INTO notifications (id_account, id_instance, message_token, message, image, image_type, audio, document, message_link, submit_type,is_buttons, schedule_time, subject) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $database->bind(1, $id_account);
+            $database->bind(2, $id_instance);
+            $database->bind(3, $this->message_token);
+            $database->bind(4, $this->message);
+            $database->bind(5, $this->image);
+            $database->bind(6, !not_empty_bool($this->image_type) ? "image" : $this->image_type);
+            $database->bind(7, $this->audio);
+            $database->bind(8, $this->document);
+            $database->bind(9, $this->message_link);
+            $database->bind(10, $this->submit_type);
+            $database->bind(11, !not_empty_bool($this->is_buttons) ? "N" : $this->is_buttons);
+            $database->bind(12, $this->schedule_time);
+            $database->bind(13, $this->subject);
+            $database->execute();
+            $last_id = $database->lastInsertId();
+            if (count($this->_buttons) > 0 && not_empty_bool($last_id)) {
+                for ($i = 0; $i < count($this->_buttons); $i++) {
+                    $database->query("INSERT INTO notifications_buttons (id_notification,button_text,button_url,button_action) VALUES (?,?,?,?)");
+                    $database->bind(1, $last_id);
+                    $database->bind(2, translate($this->_buttons[$i]['text']));
+                    $database->bind(3, $this->_buttons[$i]['url']);
+                    $database->bind(4, $this->_buttons[$i]['action']);
+                    $database->execute();
+                }
+            }
+            return not_empty_bool($last_id) ? $last_id : 0;
+        } catch (Exception $exception) {
+            error_log($exception);
+        }
+        return 0;
+    }
+
+
+    public function submit_email($id_notification = 0): bool
+    {
+        $env = new Env();
+        $text = new Text();
+        $mail = new PHPMailer(true);
+        $result = false;
+
+        try {
+
+            $filter = ($id_notification > 0) ? " AND nt.id_notification = '" . $id_notification . "'" : "";
+
+            $mail->isSMTP();                                            //Send using SMTP
+            $mail->SMTPAuth = true;                                   //Enable SMTP authentication
+            $mail->Host = $env->get("MAIL_SERVER");                     //Set the SMTP server to send through
+            $mail->Username = $env->get("MAIL_USER");                          //SMTP username
+            $mail->Password = $env->get("MAIL_PASSWORD");                               //SMTP password
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
+            $mail->Port = $env->get("MAIL_PORT");                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+            $mail->CharSet = 'UTF-8';
+
+            $database = new Database();
+            $database->query("SELECT nt.id_notification, nt.message, nt.subject, ac.email_address, ac.first_name, ac.last_name FROM notifications nt LEFT JOIN notifications_instances ni ON ni.id_notifications_instance = nt.id_instance LEFT JOIN accounts ac ON ac.id_account = nt.id_account WHERE (nt.is_active = 'Y' AND nt.is_submit = 'N' AND nt.submit_time IS NULL) AND (nt.schedule_time <= NOW() OR nt.schedule_time IS NULL) AND nt.submit_type = 'email' " . $filter . " LIMIT 0,10");
+            $resultset = $database->resultSet();
+            for ($i = 0; $i < count($resultset); $i++) {
+
+                $id_notification = $resultset[$i]['id_notification'];
+
+                $mail->setFrom('james@trackwithjames.com', translate('James from TrackWithJames'));
+                $mail->addReplyTo('james@trackwithjames.com', translate('James from TrackWithJames'));
+
+                $mail->addAddress($resultset[$i]['email_address'], $resultset[$i]['first_name'] . " " . $resultset[$i]['last_name']);
+
+                $mail->isHTML(true);
+                $mail->Subject = $resultset[$i]['subject'];
+                $mail->Body = $resultset[$i]['message'];
+                $mail->AltBody = strip_tags($resultset[$i]['message']);
+                $sent = $mail->send();
+
+                if ($sent) {
+                    $database->query("UPDATE notifications SET is_submit = 'Y', submit_time = CURRENT_TIMESTAMP WHERE id_notification = ?");
+                    $database->bind(1, $id_notification);
+                    $database->execute();
+                    $result = true;
+                }
+            }
+
+        } catch (Exception $exception) {
+            error_log($exception);
+        }
+        return $result;
+    }
+
+    public function submit_whatsapp($id_notification = 0): bool
+    {
+        $result = false;
+        try {
+            $data = [];
+            $buttons = [];
+            $filter = ($id_notification > 0) ? " AND nt.id_notification = '" . $id_notification . "'" : "";
+            $database = new Database();
+            $database->query("SELECT nt.id_notification, nt.message_token, nt.message, nt.subject, nt.image, nt.image_type, nt.audio, nt.document, nt.message_link, nt.is_buttons, ni.instance_api, ac.first_name, ac.last_name, ac.mobile_phone FROM notifications nt LEFT JOIN notifications_instances ni ON ni.id_notifications_instance = nt.id_instance LEFT JOIN accounts ac ON ac.id_account = nt.id_account WHERE (nt.is_active = 'Y' AND nt.is_submit = 'N' AND nt.submit_time IS NULL) AND (nt.schedule_time <= NOW() OR nt.schedule_time IS NULL) AND nt.submit_type = 'whatsapp' " . $filter . " LIMIT 0,10");
+            $resultset = $database->resultSet();
+            for ($i = 0; $i < count($resultset); $i++) {
+
+                $id_notification = $resultset[$i]['id_notification'];
+                $image = $resultset[$i]['image'];
+                $image_type = $resultset[$i]['image_type'];
+                $is_buttons = $resultset[$i]['is_buttons'];
+                $message_link = $resultset[$i]['message_link'];
+
+                $instance_api = $resultset[$i]['instance_api'];
+
+                $data['phone'] = $resultset[$i]['mobile_phone'];
+                $data['message'] = strip_tags($resultset[$i]['message']);
+                $data['footer'] = translate("James - Smart Business");
+
+                if (not_empty_bool($image) && $image_type === "image") {
+                    $data['image'] = $resultset[$i]['image'];
+                    if (not_empty_bool($resultset[$i]['message'])) $data['caption'] = $resultset[$i]['message'];
+                } elseif (not_empty_bool($image) && $image_type === "sticker") {
+                    $data['sticker'] = $resultset[$i]['image'];
+                }
+
+                if (not_empty_bool($message_link)) {
+                    $data['linkUrl'] = $resultset[$i]['message_link'];
+                    $data['title'] = $resultset[$i]['subject'];
+                    $data['linkDescription'] = $resultset[$i]['message'];
+                }
+
+                if (not_empty($is_buttons) === "Y") {
+                    $database->query("SELECT * FROM notifications_buttons WHERE id_notification = ?");
+                    $database->bind(1, $id_notification);
+                    $resultset2 = $database->resultSet();
+                    for ($x = 0; $x < count($resultset2); $x++) {
+                        if ($resultset2[$x]['button_action'] === "CALL") {
+                            $buttons[] = [
+                                "id" => $x,
+                                "type" => $resultset2[$x]['button_action'],
+                                "phone" => $resultset2[$x]['button_url'],
+                                "label" => $resultset2[$x]['button_text'],
+                            ];
+                        } else if ($resultset2[$x]['button_action'] === "URL") {
+                            $buttons[] = [
+                                "id" => $x,
+                                "type" => $resultset2[$x]['button_action'],
+                                "url" => $resultset2[$x]['button_url'],
+                                "label" => $resultset2[$x]['button_text'],
+                            ];
+                        } else {
+                            $buttons[] = [
+                                "id" => $x,
+                                "type" => $resultset2[$x]['button_action'],
+                                "label" => $resultset2[$x]['button_text'],
+                            ];
+                        }
+                    }
+                    if (count($buttons) > 0) $data['buttonActions'] = $buttons;
+                }
+
+                $client = new Client();
+                $response = $client->post($instance_api, [
+                    GuzzleHttp\RequestOptions::JSON => $data,
+                    'verify' => false
+                ]);
+
+                $response = json_decode((string)$response->getBody(), true);
+
+                if (array_key_exists("zaapId", $response) && array_key_exists("messageId", $response)) {
+                    $database->query("UPDATE notifications SET id_zaap = ?, id_message = ?, is_submit = 'Y', submit_time = CURRENT_TIMESTAMP WHERE id_notification = ?");
+                    $database->bind(1, $response['zaapId']);
+                    $database->bind(2, $response['messageId']);
+                    $database->bind(3, $id_notification);
+                    $database->execute();
+                    $result = true;
+                }
+
+
+            }
+        } catch (Exception $exception) {
+            error_log($exception);
+        } catch (\GuzzleHttp\Exception\GuzzleException $e) {
+            error_log($e);
+        }
+        return $result;
     }
 
 

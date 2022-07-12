@@ -236,6 +236,8 @@ class Domains
             $domain = $url->getDomain($domain);
             $domain = $text->set($domain)->lowercase()->output();
 
+            error_log($domain);
+
             if ($this->checkDomainExists($domain)) {
                 $session = new AccountsSession();
                 $token = $this->createToken();
@@ -367,7 +369,10 @@ class Domains
     public function checkDomainExists($domain)
     {
         try {
-            return (checkdnsrr($domain, "A"));
+            if (not_empty_bool($domain)) {
+                return (checkdnsrr($domain, "A"));
+            }
+            return false;
         } catch (Exception $exception) {
             error_log($exception);
         }

@@ -3,7 +3,7 @@
 class Translate
 {
 
-    private $language = "es";
+    private $language = "pt-br";
     private $path;
     private $lines = [];
     private $dictionary = [];
