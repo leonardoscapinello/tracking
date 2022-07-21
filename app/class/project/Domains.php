@@ -185,6 +185,17 @@ class Domains
         return $this->verify_time;
     }
 
+    public function getIdDomain()
+    {
+        return $this->id_domain;
+    }
+
+    public function getIdAccount()
+    {
+        return $this->id_account;
+    }
+
+
 
     public function getPublicKey()
     {
@@ -238,7 +249,7 @@ class Domains
 
             error_log($domain);
 
-            if ($this->checkDomainExists($domain)) {
+            if ($this->checkDomainUsageOrExists($domain)) {
                 $session = new AccountsSession();
                 $token = $this->createToken();
                 $public_key = $this->createPublicKey();
@@ -366,10 +377,15 @@ class Domains
     }
 
 
-    public function checkDomainExists($domain)
+    public function checkDomainUsageOrExists($domain)
     {
         try {
             if (not_empty_bool($domain)) {
+                $database = new Database();
+                $database->query("SELECT id_domain FROM domains WHERE domain = ?");
+                $database->bind(1, trim($domain));
+                $results = $database->resultSet();
+                if(count($results)) return false;
                 return (checkdnsrr($domain, "A"));
             }
             return false;

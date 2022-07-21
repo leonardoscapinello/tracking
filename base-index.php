@@ -136,7 +136,7 @@ ob_start("sanitize_output");
                         <div class="<?= ($modules->isFullWidth() ? "col-xl-12 col-lg-12 col-sm-12" : "col-xl-9 col-lg-9 col-sm-12") ?>">
 
                             <?php
-                            $route_file = $modules->get();
+                            $route_file = $modules->getContent();
                             if (not_empty($route_file)) require $route_file;
                             else  echo "Page not found";
                             ?>
@@ -152,7 +152,7 @@ ob_start("sanitize_output");
 
 <?php } else {
 
-    $route_file = $modules->get();
+    $route_file = $modules->getContent();
     if (not_empty($route_file)) require $route_file;
     else  echo "Page not found";
 

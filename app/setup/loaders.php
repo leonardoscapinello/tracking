@@ -22,10 +22,13 @@ $session = new AccountsSession();
 $modules = new Modules();
 $account = new Accounts();
 $text = new Text();
+$date = new Date();
 $domains = new Domains();
 $numeric = new Numeric();
 
 define("API_URL", $env->get("API_URL"));
+define("ACCOUNT_ID", $session->getAccountId());
+define("REMOVAL_DELAY", 6);
 
 SassCompiler::run(DIRNAME . "../../static/scss/", DIRNAME . "../../static/css/");
 SassCompiler::run(DIRNAME . "../../static/scss/additional-styles/", DIRNAME . "../../static/css/additional-styles/");

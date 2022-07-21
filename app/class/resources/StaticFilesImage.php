@@ -16,7 +16,7 @@ class StaticFilesImage
     private $_new_image;
     private $_new_image_type;
     private $_compression = 75;
-    private $_path = DIRNAME . "../../static/img/";
+    private $_path;
     private $_render_path = DIRNAME . "../../public/img/";
     private $_description;
     private $_is_svg;
@@ -24,9 +24,14 @@ class StaticFilesImage
     private $_class;
     private $_exists = false;
     private $_shadow = false;
+    private $_is_theme;
+    private $_original_source;
 
-    public function __construct($file)
+    public function __construct($file, $is_theme = false)
     {
+        $this->_original_source = $file;
+        $this->_is_theme = $is_theme;
+        $this->_path = ($is_theme ? DIRNAME . "../../theme/media/" : DIRNAME . "../../static/img/");
         $file = $this->_path . $file;
         if (not_empty($file) && file_exists($file)) {
             $this->_image_path = $file;
@@ -201,20 +206,25 @@ class StaticFilesImage
         return $this;
     }
 
-    public function html(): string
+    public function html($svg_img_tag = false, $figure_tag = false): string
     {
         $env = new Env();
         $filename = $this->filename();
-        $src = $env->get("APP_URL") . "/img/" . $filename;
+        $src = $env->get("APP_URL") . ($this->_is_theme ? "/img/theme/" . $this->_original_source : "/img/" . $filename);
+
         $alt = not_empty($this->_description) ? "alt=\"" . $this->_description . "\"" : "";
         $class = not_empty($this->_class) ? "class=\"" . $this->_class . "\"" : "";
         $shadow_class = ($this->_shadow) ? "class=\"shadow-effect\"" : "";
 
-        if ($this->_is_svg) return $this->_svg_content;
 
-        if ($this->_shadow) return sprintf("<figure %s><img src=\"%s\" %s %s><img src=\"%s\"></figure>", $shadow_class, $src, $alt, $class, $src);
-        return sprintf("<figure><img src=\"%s\" %s %s></figure>", $src, $alt, $class);
+        if ($this->_is_svg && !$svg_img_tag) return $this->_svg_content;
 
+        if ($figure_tag) {
+            if ($this->_shadow) return sprintf("<figure %s><img src=\"%s\" %s %s><img src=\"%s\"></figure>", $shadow_class, $src, $alt, $class, $src);
+            return sprintf("<figure><img src=\"%s\" %s %s></figure>", $src, $alt, $class);
+        }else{
+            return sprintf("<img src=\"%s\" %s %s>", $src, $alt, $class);
+        }
     }
 
     public function classList($class): StaticFilesImage

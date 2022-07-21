@@ -2,8 +2,10 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-RewriteRule ^images/(.*)$    public/images/$1 [L,NC,QSA]
-RewriteRule ^download$      ./download.php [L,NC,QSA]
+RewriteRule ^img/theme/(.*)$    ./theme/media/$1 [L,NC,QSA]
+RewriteRule ^img/(.*)$    ./static/img/$1 [L,NC,QSA]
+RewriteRule ^js/(.*)$    ./static/js/$1 [L,NC,QSA]
+RewriteRule ^download$    ./download.php [L,NC,QSA]
 RewriteRule ^profile/drawn/([0-9]+)x([0-9]+)/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)/([0-9]+)/([0-9]+)/([a-zA-Z0-9_-]+)$   ./public/profile/generate.php?width=$1&height=$2&background=$3&color=$4&quality=$5&length=$6&format=$7 [L,NC,QSA]
 
 

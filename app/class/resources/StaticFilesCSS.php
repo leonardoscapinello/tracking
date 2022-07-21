@@ -8,22 +8,23 @@ class StaticFilesCSS
     private $_css = null;
     private $_id;
     private $is_minified = false;
-
     private $_search;
     private $_replace;
 
-    public function __construct($files)
+    public function __construct($files, $is_theme = false)
     {
         if ((array)count($files) > 0) {
             foreach ($files as $file) {
+                if ($is_theme) $this->_path = DIRNAME . "../../theme/";
+                else $this->_path = DIRNAME . "../../static/css/";
                 $path_parts = pathinfo($file);
-                $file = $this->_path . $path_parts['basename'];
+                $file = $this->_path . ($is_theme ? $path_parts['dirname'] . "/" : "") . $path_parts['basename'];
                 if (file_exists($file)) {
                     $this->_css .= file_get_contents($file);
-
                 }
             }
         }
+        $this->_path = DIRNAME . "../../static/css/";
     }
 
     public function replace($search, $replace): StaticFilesCSS
@@ -33,6 +34,12 @@ class StaticFilesCSS
         if (not_empty_bool($this->_search) && not_empty_bool($this->_replace)) {
             $this->_css = str_replace($this->_search, $this->_replace, $this->_css);
         }
+        return $this;
+    }
+
+    public function isTheme(): StaticFilesCSS
+    {
+        $this->_is_theme = true;
         return $this;
     }
 
@@ -50,7 +57,6 @@ class StaticFilesCSS
 
     public function id($id): StaticFilesCSS
     {
-
         $this->_id = $id;
         return $this;
     }
@@ -81,11 +87,9 @@ class StaticFilesCSS
         }
         $end_file = $this->_path . $output_filename;
 
-
         if ($env->get("APP_ENV") !== "local") {
             return $this;
         }
-
         // fix html
         $this->_css = str_replace("<style>", "", $this->_css);
         $this->_css = str_replace("</style>", "", $this->_css);
@@ -103,15 +107,11 @@ class StaticFilesCSS
             $filename = str_replace(".min.css", ".css", $filename);
             $filename = str_replace(".css", ".min.css", $filename);
         }
-
         $path = $env->get("APP_STATIC") . "/css/" . $filename . "?v=" . date("YmdHis");
-
-
         $id = "";
         if (not_empty($this->_id)) {
             $id = "id=\"$this->_id\"";
         }
-
         $this->clean();
         return "<link href=\"$path\" type=\"text/css\" rel=\"stylesheet\" $id>" . PHP_EOL;
     }

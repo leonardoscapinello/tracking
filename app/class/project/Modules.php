@@ -351,7 +351,7 @@ class Modules
         return $this->modules_exists == "Y";
     }
 
-    public function get(): ?string
+    public function getContent(): ?string
     {
         try {
             if ($this->isModulesExists()) {

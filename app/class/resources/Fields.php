@@ -43,7 +43,7 @@ class Fields
     public function text(string $custom_type = "text"): Fields
     {
         $this->_custom_type = $custom_type;
-        $this->_template = '<div class="form-group"><div class="form-meta"><label for="%for" class="%labelclass">%label</label></div><div class="form-input"><input type="' . $custom_type . '" class="%class" name="%name" %id placeholder="%placeholder" value="%value" %min %max %maxlength %blur %style %required %disabled %readonly %customScript/></div></div>';
+        $this->_template = '<div class="form-group fv-row mb-10"><label for="%for" class="fw-semibold fs-6 mb-2 %labelclass" %markdown >%label</label><input type="' . $custom_type . '" class="form-control form-control-solid mb-3 mb-lg-0 %class" name="%name" %id placeholder="%placeholder" value="%value" %min %max %maxlength %blur %style %required %disabled %readonly %customScript/></div>';
         return $this;
     }
 
@@ -58,7 +58,7 @@ class Fields
     public function textarea(): Fields
     {
         $this->_field_type = "textarea";
-        $this->_template = '<div class="form-group"><label for="%for" class="%labelclass"><span class="spc-label-text">%label</span>%markdown</div><div class="form-input"><textarea class="%class" name="%name" %id placeholder="%placeholder" %maxlength %blur %style %required %disabled %readonly>%value</textarea></label></div></div>';
+        $this->_template = '<div class="form-group fv-row mb-10"><label for="%for" class="%labelclass"><span class="spc-label-text">%label</span></label><textarea class="form-control form-control-solid mb-3 mb-lg-0 %class" name="%name" %id placeholder="%placeholder" %maxlength %blur %style %required %disabled %readonly>%value</textarea></div>';
         return $this;
     }
 
@@ -70,11 +70,12 @@ class Fields
         return $this;
     }
 
+
     public function select(): Fields
     {
         $this->_field_type = "select";
         $this->_class = str_replace("spc-input", "spc-select", $this->_class);
-        $this->_template = '<div class="form-group"><div class="form-meta"><label for="%id" class="%labelclass"><span class="spc-label-text">%label</span>%markdown</div><div class="form-input"><select class="%class" name="%name" %id  %style %required %disabled %customScript>%options</select></label></div></div>';
+        $this->_template = '<div class="fv-row mb-10"><label for="%id" class="fw-semibold fs-6 mb-2 %labelclass"><span class="spc-label-text">%label</span>%markdown</label><select class="form-select form-select %class" name="%name" %id  %style %required %disabled %customScript>%options</select></div>';
         return $this;
     }
 
@@ -229,6 +230,8 @@ class Fields
 
         $this->optionsHTML();
 
+        if ($this->_required) $this->_labelclass .= " requried";
+
         $output = str_replace("%class", $this->_class, $output);
         $output = str_replace("%labelclass", $this->_labelclass, $output);
         $output = str_replace("%name", $this->_name, $output);
@@ -237,7 +240,7 @@ class Fields
         if (not_empty($this->_id)) $output = str_replace("%id", "id=\"" . $this->_id . "\"", $output);
 
         $output = str_replace("%label", $this->_label, $output);
-        $output = str_replace("%markdown", "<div class=\"markdown\">" . (not_empty_bool($this->_markdown) ? $this->_markdown : "") . "</div>", $output);
+        $output = str_replace("%markdown", (not_empty_bool($this->_markdown) ? ("data-label-help=\"after\" data-bs-toggle=\"tooltip\" data-bs-custom-class=\"tooltip-inverse\" data-bs-placement=\"top\" title=\"" . $this->_markdown . "\"") : ""), $output);
         $output = str_replace("%required", (not_empty_bool($this->_required) ? $this->_required : ""), $output);
         $output = str_replace("%disabled", (not_empty_bool($this->_disabled) ? $this->_disabled : ""), $output);
         $output = str_replace("%readonly", (not_empty_bool($this->_readonly) ? $this->_readonly : ""), $output);

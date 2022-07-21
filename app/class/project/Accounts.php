@@ -5,17 +5,21 @@ class Accounts
 
 
     private $id_account;
-    private $username;
-    private $email_address;
+    private $id_plan;
     private $first_name;
     private $last_name;
-    private $mobile_phone;
+    private $username;
+    private $email_address;
     private $password;
-    private $is_active;
+    private $mobile_phone;
+    private $role;
+    private $profile_image;
+    private $company_name;
     private $version;
     private $insert_time;
     private $update_time;
-    private $profile_image;
+    private $is_active;
+    private $force_password;
 
     public function __construct($id_account = 0)
     {
@@ -47,111 +51,91 @@ class Accounts
 
     }
 
-    /**
-     * @return mixed
-     */
     public function getIdAccount()
     {
         return $this->id_account;
     }
 
-
-    /**
-     * @return mixed
-     */
     public function getUsername()
     {
         return $this->username;
     }
 
-    /**
-     * @return mixed
-     */
     public function getEmailAddress()
     {
         return $this->email_address;
     }
 
-    /**
-     * @return mixed
-     */
     public function getFirstName()
     {
         return $this->first_name;
     }
 
-    /**
-     * @return mixed
-     */
     public function getLastName()
     {
         return $this->last_name;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getFullName()
+    public function getFullName(): string
     {
         return $this->first_name . " " . $this->last_name;
     }
 
-    /**
-     * @return mixed
-     */
     public function getMobilePhone()
     {
         return $this->mobile_phone;
     }
 
-    /**
-     * @return mixed
-     */
     public function getPassword()
     {
         return $this->password;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getIsActive()
+    public function getIsActive(): bool
     {
         return $this->is_active === "Y";
     }
 
-    /**
-     * @return mixed
-     */
     public function getVersion()
     {
         return $this->version;
     }
 
-    /**
-     * @return mixed
-     */
     public function getInsertTime()
     {
         return $this->insert_time;
     }
 
-    /**
-     * @return mixed
-     */
     public function getUpdateTime()
     {
         return $this->update_time;
     }
 
-
-    /**
-     * @return mixed
-     */
-    public function getProfileImage($size = 38)
+    public function getProfileImage($size = 38): string
     {
         $url = new URL();
         return $url->page("profile/drawn/" . $size . "x" . $size . "/E5F5CA/9DD052/100/2/png?text=" . $this->getFullName())->output();
+    }
+
+    public function getIdPlan()
+    {
+        return $this->id_plan;
+    }
+
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+    public function getCompanyName()
+    {
+        return $this->company_name;
+    }
+
+
+    public function getForcePassword()
+    {
+        return $this->force_password;
     }
 
 

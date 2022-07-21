@@ -1,112 +1,31 @@
-<form>
+<?php
+$action = get_request("action");
+if ("save" === $action) {
+    $pixels = new Pixels();
+    $status = $pixels->setPixelName(get_request("pixel_name"))->save();
+    if (not_empty_bool($status)) $url->application("dashboard")->page("pixels")->setId($status)->redirect();
+}
+?>
+<form accept-charset="utf-8" method="POST" action="">
+    <?= $fields->hidden()->name("action")->value("save")->output() ?>
     <div style="max-width: 820px;margin: 0 auto">
 
-        <div>
-            <div class="page-hero page-container " id="page-hero">
-                <div class="padding d-flex">
-                    <div class="page-title">
-                        <h2 class="text-md text-highlight"><?= translate($modules->getTitle()) ?></h2>
-                    </div>
-                    <div class="flex"></div>
-                </div>
-            </div>
-        </div>
 
         <div class="page-content page-container" id="page-content">
             <div class="padding">
                 <div class="card">
-                    <div class="card-header">
-                        <strong><?= translate($modules->getTitle()) ?></strong>
-                    </div>
                     <div class="card-body">
-                        <?= $fields->text()->label("Domain")->classList("form-control")->readonly()->value($domains->getDomain())->name("domain")->id("domain")->output() ?>
-                        <?= $fields->text()->label("Pixel name")->classList("form-control")->value("")->name("pixel_name")->id("pixel_name")->output() ?>
 
-                        <div class="card-header">
-                            <strong><?= translate("Tracking events") ?></strong>
+                        <?= $alerts->warning()->text("James will monitor every page you implement the trache script. Under Pixel Settings, you'll see the embed code to implement and monitor each event specifically.")->display() ?>
+
+                        <div style="height: 20px;"></div>
+
+                        <?= $fields->text()->label("Domain")->classList("form-control")->markdown("This pixel should only be deployed in this domain")->readonly()->value($domains->getDomain())->name("domain")->id("domain")->output() ?>
+                        <?= $fields->text()->label("Pixel name")->classList("form-control")->value(translate("%s's Pixel", $account->getCompanyName()))->markdown("The pixel name will be used to identify it, but it has no relevance to tracing")->required()->name("pixel_name")->id("pixel_name")->output() ?>
+
+                        <div class="center text-center">
+                            <button id="submit" class="btn btn-success"><?= translate("Create a new pixel") ?></button>
                         </div>
-
-                        <?= $alerts->warning()->text("James will monitor every page on your site once you add the code to the head. In the pixel settings you must define which pages consider each event.")->display() ?>
-
-                        <div style="height: 20px"></div>
-
-                        <div class="row align-content-center center-layout">
-                            <div class="col-sm-6">
-                                <i class="fa-duotone fa-fire"></i>
-                                <?= translate("Initial event") ?>
-                            </div>
-                            <div class="col-sm-6">
-                                <i class="fa-duotone fa-bullseye"></i>
-                                <?= translate("Conclusion event") ?>
-                            </div>
-                        </div>
-
-                        <div style="height: 20px"></div>
-                        <div class="row align-content-center center-layout">
-                            <div class="col-sm-6">
-                                <div class="mb-3">
-                                    <label class="md-switch">
-                                        <input type="checkbox" name="events[]" value="PageView">
-                                        <i class="green"></i>
-                                        <?= translate("Page view") ?>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 dotted-arrow">
-                                <div class="mb-3">
-                                    <label class="md-switch">
-                                        <input type="checkbox" name="events[]" value="PageLoad">
-                                        <i class="green"></i>
-                                        <?= translate("Page finished load") ?>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mt-3 align-content-center center-layout">
-                            <div class="col-sm-6">
-                                <div class="mb-3">
-                                    <label class="md-switch">
-                                        <input type="checkbox" name="events[]" value="InitiateCheckout">
-                                        <i class="green"></i>
-                                        <?= translate("Access to checkout") ?>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 dotted-arrow">
-                                <div class="mb-3">
-                                    <label class="md-switch">
-                                        <input type="checkbox" name="events[]" value="Purchase">
-                                        <i class="green"></i>
-                                        <?= translate("Purchase completed") ?>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mt-3 align-content-center center-layout">
-                            <div class="col-sm-6">
-                                <div class="mb-3">
-                                    <label class="md-switch">
-                                        <input type="checkbox" name="events[]" value="RegisterCompleted">
-                                        <i class="green"></i>
-                                        <?= translate("Register completed") ?>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-sm-6  dotted-arrow">
-                                <div class="mb-3">
-                                    <label class="md-switch">
-                                        <input type="checkbox" name="events[]" value="Lead">
-                                        <i class="green"></i>
-                                        <?= translate("Lead") ?>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <button id="submit" class="btn btn-success"><?= translate("Create a new pixel") ?></button>
 
                     </div>
                 </div>

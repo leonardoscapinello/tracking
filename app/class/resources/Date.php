@@ -59,6 +59,11 @@ class Date
         return round((strtotime(date("Y-m-d H:i:s")) - strtotime($this->_date)) / (60 * 60 * 24), 3);
     }
 
+    public function differenceTimeFromNow(): float
+    {
+        return round((strtotime(date("Y-m-d H:i:s")) - strtotime($this->_date)) / (60 * 60 * 24), 3);
+    }
+
     public function differenceDaysToNow(): float
     {
         return round((strtotime($this->_date) - strtotime(date("Y-m-d H:i:s"))) / (60 * 60 * 24), 3);
@@ -104,7 +109,7 @@ class Date
         return $this;
     }
 
-    public function format(string $format): Date
+    public function format(string $format = "d/m/y H:i"): Date
     {
         $this->_format = $format;
         return $this;
@@ -270,6 +275,73 @@ class Date
             } else {
                 return $years . " " . translate("years");
             }
+        }
+    }
+
+
+    public function getRemainingTimeFromNow($end_date)
+    {
+        try {
+
+            $timestamp = date("Y-m-d H:i:s", strtotime($end_date));
+            $time_today = date("Y-m-d H:i:s");
+
+            $time_final = strtotime($timestamp);
+            $current_time = strtotime($time_today);
+
+            $time_difference = $time_final - $current_time;
+
+            $seconds = $time_difference;
+            $minutes = round($seconds / 60);
+            $hours = round($seconds / 3600);
+            $days = round($seconds / 86400);
+            $weeks = round($seconds / 604800);
+            $months = round($seconds / 2629440);
+            $years = round($seconds / 31553280);
+
+            if ($seconds <= 60) {
+                return translate("less than 1 minute");
+            } else if ($minutes <= 60) {
+                if ($minutes == 1) {
+                    return translate("1 minute");
+                } else {
+                    return $minutes . " " . translate("minutes");
+                }
+            } else if ($hours <= 24) {
+                if ($hours == 1) {
+                    return translate("1 hour");
+                } else {
+                    return $hours . " " . translate("hours");
+                }
+            } else if ($days <= 7) {
+                if ($days == 1) {
+                    return translate("yesterday");
+                } else {
+                    return $days . " " . translate("days");
+                }
+            } else if ($weeks <= 4.3) //4.3 == 52/12
+            {
+                if ($weeks == 1) {
+                    return translate("1 week");
+                } else {
+                    return $weeks . " " . translate("weeks");
+                }
+            } else if ($months <= 12) {
+                if ($months == 1) {
+                    return "1 month";
+                } else {
+                    return $months . " " . translate("months");
+                }
+            } else {
+                if ($years == 1) {
+                    return "1 year";
+                } else {
+                    return $years . " " . translate("years");
+                }
+            }
+
+        } catch (Exception $exception) {
+            error_log($exception);
         }
     }
 
